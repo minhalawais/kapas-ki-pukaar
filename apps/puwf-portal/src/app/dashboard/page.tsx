@@ -1,19 +1,28 @@
 "use client";
 
 import { t, type MessageKey } from "@kapas/localization";
-import { AlertTriangle, CheckCircle2, ClockAlert, FolderOpen, Inbox, TimerReset } from "lucide-react";
+import { AlertTriangle, CalendarDays, CheckCircle2, ClockAlert, FolderOpen, Inbox, RotateCcw, TimerReset } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { FilterBar, type DashboardFilterDraft } from "@/components/complaints/FilterBar";
 import { DonutChart, ExecutiveTrendChart, RankedList, SignalCard } from "@/components/dashboard/DashboardCharts";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { PageHeader } from "@/components/shell/page-header";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
+import { Button } from "@/components/ui/button";
 import { prioritySeriesColor, privacySafeRows } from "@/lib/analytics";
 import { emptyFilters, readStoredFilters, toComplaintFilters, writeStoredFilters } from "@/lib/dashboard";
-import { useDashboardData, useProvinces } from "@/lib/use-complaints";
+import { useDashboardData } from "@/lib/use-complaints";
 import { useLocaleStore } from "@/stores/locale-store";
+
+interface DateRangeDraft {
+  from: string;
+  to: string;
+}
+
+type DatePreset = "7d" | "30d" | "90d" | "all";
+
+const dateInputClass = "h-input rounded-control border border-border bg-surface px-3 text-sm text-ink outline-none transition-colors focus:border-action focus:ring-2 focus:ring-[rgba(11,112,75,0.14)]";
 
 function percent(value: number | null): string {
   return value == null ? "—" : `${Math.round(value)}%`;
@@ -33,24 +42,130 @@ function geographyLabel(locale: "en" | "ur", key: string): string {
   return key === "suppressed" ? t(locale, "portal.analytics.suppressed") : t(locale, `province.${key}` as MessageKey);
 }
 
+function isoDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+function presetRange(preset: DatePreset): DateRangeDraft {
+  if (preset === "all") {
+    return { from: "", to: "" };
+  }
+  const days = preset === "7d" ? 7 : preset === "30d" ? 30 : 90;
+  const end = new Date();
+  const start = new Date();
+  start.setDate(end.getDate() - (days - 1));
+  return { from: isoDate(start), to: isoDate(end) };
+}
+
+function activePreset(range: DateRangeDraft): DatePreset | "custom" {
+  for (const preset of ["7d", "30d", "90d", "all"] as DatePreset[]) {
+    const candidate = presetRange(preset);
+    if (candidate.from === range.from && candidate.to === range.to) {
+      return preset;
+    }
+  }
+  return "custom";
+}
+
+function DateRangeScopeBar({
+  value,
+  onChange,
+  onReset,
+}: {
+  value: DateRangeDraft;
+  onChange: (next: DateRangeDraft) => void;
+  onReset: () => void;
+}) {
+  const locale = useLocaleStore((s) => s.locale);
+  const selectedPreset = activePreset(value);
+  const presets: { id: DatePreset; label: string }[] = [
+    { id: "7d", label: t(locale, "portal.dashboard.range.7d") },
+    { id: "30d", label: t(locale, "portal.dashboard.range.30d") },
+    { id: "90d", label: t(locale, "portal.dashboard.range.90d") },
+    { id: "all", label: t(locale, "portal.dashboard.range.all") },
+  ];
+
+  return (
+    <div className="rounded-card border border-border bg-surface shadow-[0_12px_28px_rgba(19,42,33,0.05)]">
+      <div className="flex flex-col gap-4 p-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-control bg-[var(--surface-ai)] text-[var(--brand-fos-teal-dark)]">
+            <CalendarDays size={19} aria-hidden />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold text-ink">{t(locale, "portal.dashboard.dateScopeTitle")}</h2>
+            <p className="mt-1 max-w-2xl text-xs leading-5 text-muted">{t(locale, "portal.dashboard.dateScopeNote")}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+          <div className="inline-grid rounded-control border border-border bg-page p-1 sm:grid-cols-4">
+            {presets.map((preset) => {
+              const selected = selectedPreset === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  className={`h-8 rounded-[6px] px-3 text-xs font-semibold transition-colors ${selected ? "bg-action text-[color:var(--on-primary)] shadow-sm" : "text-muted hover:bg-surface hover:text-ink"}`}
+                  onClick={() => onChange(presetRange(preset.id))}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(150px,1fr)_minmax(150px,1fr)_auto] sm:items-end">
+            <label className="text-xs font-semibold text-muted">
+              {t(locale, "portal.filters.from")}
+              <input
+                type="date"
+                className={`${dateInputClass} mt-1 w-full`}
+                value={value.from}
+                max={value.to || undefined}
+                onChange={(event) => onChange({ ...value, from: event.target.value })}
+              />
+            </label>
+            <label className="text-xs font-semibold text-muted">
+              {t(locale, "portal.filters.to")}
+              <input
+                type="date"
+                className={`${dateInputClass} mt-1 w-full`}
+                value={value.to}
+                min={value.from || undefined}
+                onChange={(event) => onChange({ ...value, to: event.target.value })}
+              />
+            </label>
+            <Button type="button" variant="secondary" className="h-input px-3" onClick={onReset}>
+              <RotateCcw size={15} />
+              {t(locale, "portal.dashboard.range.reset")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const locale = useLocaleStore((s) => s.locale);
-  const [draft, setDraft] = useState<DashboardFilterDraft>(emptyFilters);
+  const [range, setRange] = useState<DateRangeDraft>(() => presetRange("30d"));
   const [filtersReady, setFiltersReady] = useState(false);
-  const filters = useMemo(() => toComplaintFilters(draft), [draft]);
+  const filters = useMemo(() => toComplaintFilters({ ...emptyFilters(), from: range.from, to: range.to }), [range.from, range.to]);
   const query = useDashboardData(filters, filtersReady);
-  const provinces = useProvinces();
 
   useEffect(() => {
     const stored = readStoredFilters();
-    const globalSearch = new URLSearchParams(window.location.search).get("search");
-    setDraft(globalSearch ? { ...stored, search: globalSearch } : stored);
+    setRange({
+      from: stored.from || presetRange("30d").from,
+      to: stored.to || presetRange("30d").to,
+    });
     setFiltersReady(true);
   }, []);
 
-  function updateFilters(next: DashboardFilterDraft) {
-    setDraft(next);
-    writeStoredFilters(next);
+  function updateRange(next: DateRangeDraft) {
+    setRange(next);
+    writeStoredFilters({ ...emptyFilters(), from: next.from, to: next.to });
   }
 
   const snapshot = query.data?.snapshot;
@@ -65,13 +180,7 @@ export default function DashboardPage() {
       {query.isLoading || !filtersReady ? <LoadingState label={t(locale, "common.loading")} /> : null}
       {query.isError ? <ErrorState title={t(locale, "common.error")} retryLabel={t(locale, "common.retry")} onRetry={() => void query.refetch()} /> : null}
 
-      <div className="overflow-hidden rounded-card border border-border bg-surface">
-        <div className="border-b border-border px-4 py-4">
-          <h2 className="text-sm font-semibold text-ink">{t(locale, "portal.dashboard.filtersTitle")}</h2>
-          <p className="mt-1 text-xs text-muted">{t(locale, "portal.dashboard.filtersNote")}</p>
-        </div>
-        <FilterBar value={draft} provinces={provinces.data ?? []} onChange={updateFilters} onClear={() => updateFilters(emptyFilters())} />
-      </div>
+      <DateRangeScopeBar value={range} onChange={updateRange} onReset={() => updateRange(presetRange("30d"))} />
 
       {snapshot ? (
         <>
