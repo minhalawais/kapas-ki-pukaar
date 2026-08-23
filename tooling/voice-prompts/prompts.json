@@ -32,8 +32,8 @@
     }
   },
   "counts": {
-    "generated": 82,
-    "stale": 1,
+    "generated": 80,
+    "stale": 3,
     "missing": 26
   },
   "prompts": [
@@ -1827,7 +1827,7 @@
       "scriptUrdu": "کیا سانس لینے میں مشکل، چکر، قے، یا آنکھوں اور جلد میں جلن ہو رہی ہے؟ جو علامات ہیں وہ چنیں۔ شدید حالت میں پہلے فوری طبی مدد لیں۔",
       "tone": "guided-question",
       "scriptSha256": "f1034abdac6742b3ed8187ed744b7959ccda8b0a7b2b7e595ef879a4d4559e4c",
-      "generationStatus": "generated",
+      "generationStatus": "stale",
       "provenance": {
         "promptId": "WF-pes-sym",
         "locale": "ur-PK",
@@ -2009,7 +2009,7 @@
       "scriptUrdu": "ادائیگی کیسے ہونی تھی؟ جواب کے لیے روزانہ، فی کلو / پیس، ایک ساتھ، یقین نہیں میں سے انتخاب کریں۔",
       "tone": "guided-question",
       "scriptSha256": "58b8d19de108a2716367eae0ffe00a8aa83070da2d5c5ea1cba208b88d2313c5",
-      "generationStatus": "generated",
+      "generationStatus": "stale",
       "provenance": {
         "promptId": "WF-wag-pay",
         "locale": "ur-PK",
