@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-where-province",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "کون سا صوبہ یا علاقہ؟",
+  "scriptSha256": "5961a8d1cb7364a633746c07b2cf31122eac52bf5ff47e3e7b6b8d2d531f9df3",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "d5ea18594a0b842bb91bfcd17faf166e6acbe8dfdef342ef80c073566c86226b",
+  "generatedAt": "2026-08-22T08:38:00.360Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 2.346,
+    "integratedLufs": -18.42,
+    "truePeakDb": -6.76
+  },
+  "remasteredAt": "2026-08-22T09:56:20.063Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

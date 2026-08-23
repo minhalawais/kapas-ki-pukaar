@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-privacy",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "آپ کی شناخت کیسے رکھی جائے؟ گمنام میں نام نہیں بتایا جائے گا۔ خفیہ میں نام صرف مجاز ٹیم دیکھے گی۔ یا آپ نام ظاہر کرنے کی اجازت دے سکتے ہیں۔",
+  "scriptSha256": "c1adb730b05f1e265e7a83397b821009e549e5de4985c02fa06cfe543f307f77",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "2009f2d2d479678ce031c221ef73ea6d50daa8fd5bb7e676dc174c666240b0a9",
+  "generatedAt": "2026-08-22T08:43:11.538Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 13.265,
+    "integratedLufs": -18.26,
+    "truePeakDb": -3.58
+  },
+  "remasteredAt": "2026-08-22T09:56:23.571Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

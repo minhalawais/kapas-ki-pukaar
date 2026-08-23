@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-when",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "یہ کب ہوا؟ جواب کے لیے آج، کل، اس ہفتے، اس سے پہلے، یقین نہیں میں سے انتخاب کریں۔",
+  "scriptSha256": "f246b8bf826c7e81c86192687119968886fae7210d38ebc9d79a6f60e2ce0056",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "b44d7c3e732907f0c6769bcdbed3366a7749628f4f8335921e79c88c32936524",
+  "generatedAt": "2026-08-22T08:37:01.628Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 9.994,
+    "integratedLufs": -18.06,
+    "truePeakDb": -2.16
+  },
+  "remasteredAt": "2026-08-22T09:56:19.185Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

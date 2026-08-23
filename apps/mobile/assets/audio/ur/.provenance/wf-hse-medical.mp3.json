@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-hse-medical",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "کیا طبی مدد درکار ہے؟ جواب کے لیے ہاں، نہیں میں سے انتخاب کریں۔",
+  "scriptSha256": "afe7d801f1c676d0928ffa13dfcbbf5b96e67218eb4030b6fabccbfa1dcc97ee",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "534b3c9c3455fcf58a84cd2b33ba0ff0a32e59a57332edc253aea51ad80ecf21",
+  "generatedAt": "2026-08-22T08:53:19.546Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 6.041,
+    "integratedLufs": -17.14,
+    "truePeakDb": -1.51
+  },
+  "remasteredAt": "2026-08-22T09:56:31.350Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

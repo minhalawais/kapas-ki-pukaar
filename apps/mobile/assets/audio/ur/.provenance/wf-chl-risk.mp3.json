@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-chl-risk",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "کیا بچہ ابھی خطرے میں ہے؟ اگر ہاں تو پہلے اسے محفوظ جگہ اور قابل اعتماد بالغ کی مدد دلانے کی کوشش کریں۔",
+  "scriptSha256": "0e450a991b56b1c5ecbf9db9bce7256d713035e05056ebcb71845c65601c69a8",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "b56afdbc63a13d58c97f6860e24438330a742a2c88106e6fffddb7cf5d4599ed",
+  "generatedAt": "2026-08-22T08:34:19.875Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 10.541,
+    "integratedLufs": -17.93,
+    "truePeakDb": -2.67
+  },
+  "remasteredAt": "2026-08-22T09:56:15.235Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

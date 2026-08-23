@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-hse-what",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "حفاظت کا کیا مسئلہ ہے؟ جواب کے لیے چوٹ، غیر محفوظ سامان، گرمی، آمدورفت، کوئی اور میں سے انتخاب کریں۔",
+  "scriptSha256": "612b7911315dbea7a1117c661bda1f42052158bb73d708a4e5e449b3068ceb3b",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "96087e94da3d481604cfc7c047e5c8a69b3217f22e94d9c5e6a31ebcc7ef956b",
+  "generatedAt": "2026-08-22T08:52:24.827Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 10.731,
+    "integratedLufs": -17.82,
+    "truePeakDb": -2.4
+  },
+  "remasteredAt": "2026-08-22T09:56:30.729Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

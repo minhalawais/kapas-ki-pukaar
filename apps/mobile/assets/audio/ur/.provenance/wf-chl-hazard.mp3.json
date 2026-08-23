@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-chl-hazard",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "کیا بچہ خطرناک کام کر رہا ہے؟ جواب کے لیے ہاں، نہیں میں سے انتخاب کریں۔",
+  "scriptSha256": "7f879f25fe743a3a9542dc28c711a0b973ee0c23b189c64c3e6c61d43883ec0e",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "0c88889e42088702ce90b7adad0d31ccff55325cfc246a20e77f6634e02cf9e1",
+  "generatedAt": "2026-08-22T08:33:49.083Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 5.864,
+    "integratedLufs": -18.01,
+    "truePeakDb": -3.95
+  },
+  "remasteredAt": "2026-08-22T09:56:14.734Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

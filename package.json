@@ -1,0 +1,45 @@
+{
+  "name": "kapas-ki-pukaar",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:portal": "pnpm --filter @kapas/puwf-portal dev",
+    "dev:mobile": "pnpm --filter @kapas/mobile dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "pnpm --filter @kapas/puwf-portal test:e2e",
+    "format": "prettier --write .",
+    "brand:generate": "python3 tooling/brand/generate-logo-assets.py",
+    "brand:verify": "python3 tooling/brand/verify_logo_assets.py",
+    "voice:status": "node tooling/voice-prompts/generate.mjs status",
+    "voice:validate": "node tooling/voice-prompts/generate.mjs validate",
+    "voice:generate": "node tooling/voice-prompts/generate.mjs generate",
+    "voice:generate-rotate": "node tooling/voice-prompts/generate.mjs generate --rotate",
+    "voice:approve-validation": "node tooling/voice-prompts/generate.mjs approve-validation",
+    "voice:approve-audio": "node tooling/voice-prompts/generate.mjs approve-audio",
+    "voice:sync": "node tooling/voice-prompts/generate.mjs sync",
+    "voice:remaster": "node tooling/voice-prompts/generate.mjs remaster",
+    "voice:verify": "node tooling/voice-prompts/generate.mjs verify",
+    "voice:test": "node --test tooling/voice-prompts/generate.test.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0",
+    "vitest": "^3.0.9"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    }
+  }
+}

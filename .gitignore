@@ -1,0 +1,37 @@
+# Local secrets — never commit
+.env
+tooling/voice-prompts/.staging/
+tooling/voice-prompts/.generation-run.log
+tooling/voice-prompts/.rotation-state.json
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+*.swp
+.idea/
+.vscode/
+Untitled
+
+# Dependencies / build
+node_modules/
+.turbo/
+dist/
+.next/
+*.tsbuildinfo
+
+# Expo
+apps/mobile/.expo/
+apps/mobile/dist/
+apps/mobile/dist-*/
+apps/mobile/assets/audio/**/*.wav
+
+# Test / coverage
+coverage/
+playwright-report/
+test-results/
+
+# Local working artifacts
+.artifacts/
+tmp/
+*.tmp.mp3

@@ -1,0 +1,16 @@
+{
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "validationPromptIds": [
+    "SC-welcome",
+    "WF-identity",
+    "WF-wag-pay",
+    "WF-pes-sym",
+    "WF-har-private"
+  ],
+  "voiceValidation": {
+    "status": "pending",
+    "reviewer": null,
+    "reviewedAt": null
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-where-place",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "گاؤں یا جگہ کا نام کیا ہے؟ گاؤں، کھیت، کیمپ، سڑک یا قریبی نشانی لکھ سکتے ہیں۔",
+  "scriptSha256": "d15b80e9d4a82f2bf6dba04e9b83b038441aa905209744e189acc0cea0f2f6e2",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "a1c77853a3d16d310340e764eee87eed456f5c7b3ef4309475c13137d29fa91b",
+  "generatedAt": "2026-08-22T08:38:59.188Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 9.083,
+    "integratedLufs": -17.54,
+    "truePeakDb": -2.45
+  },
+  "remasteredAt": "2026-08-22T09:56:20.925Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}

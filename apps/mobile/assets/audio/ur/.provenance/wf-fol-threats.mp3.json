@@ -1,0 +1,28 @@
+{
+  "promptId": "WF-fol-threats",
+  "locale": "ur-PK",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Sulafat",
+  "scriptUrdu": "کیا کام نہ کرنے پر دھمکی، سزا، مارپیٹ، یا نقصان کا خوف ہے؟",
+  "scriptSha256": "a68320bd560e6b861077f1326ff59566797665b77415b83a4d8e9d207535c20b",
+  "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
+  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
+  "fileSha256": "9b72601b1e6eed2626d51e768b3bde27fe97db3d0cbeaeb684d3354f9a70ad5a",
+  "generatedAt": "2026-08-22T08:49:31.488Z",
+  "attempt": 1,
+  "projectAlias": "primary-free-project",
+  "approvalStatus": "pending-native-review",
+  "reviewer": null,
+  "reviewedAt": null,
+  "audio": {
+    "codec": "mp3",
+    "sampleRateHertz": 24000,
+    "channels": 1,
+    "bitrate": 64000,
+    "durationSeconds": 6.272,
+    "integratedLufs": -18.12,
+    "truePeakDb": -2.2
+  },
+  "remasteredAt": "2026-08-22T09:56:27.670Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+}
