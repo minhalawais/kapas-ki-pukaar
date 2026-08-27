@@ -5,7 +5,7 @@ import type { TextStyle } from "react-native";
  * Tight lineHeight or zero padding clips descenders on Android/iOS.
  */
 export function urduLineHeight(fontSize: number, role: "ui" | "heading" = "ui"): number {
-  return Math.round(fontSize * (role === "heading" ? 2.25 : 1.75));
+  return Math.round(fontSize * (role === "heading" ? 1.45 : 1.35));
 }
 
 export function urduSafeText(fontSize: number, role: "ui" | "heading" = "ui"): TextStyle {
@@ -13,8 +13,8 @@ export function urduSafeText(fontSize: number, role: "ui" | "heading" = "ui"): T
   return {
     fontSize,
     lineHeight: urduLineHeight(fontSize, role),
-    paddingTop: Math.round(fontSize * (isHeading ? 0.38 : 0.14)),
-    paddingBottom: Math.round(fontSize * (isHeading ? 0.35 : 0.22)),
+    paddingTop: Math.round(fontSize * (isHeading ? 0.05 : 0.02)),
+    paddingBottom: Math.round(fontSize * (isHeading ? 0.04 : 0.02)),
     includeFontPadding: true,
     writingDirection: "rtl",
   };

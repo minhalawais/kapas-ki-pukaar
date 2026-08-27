@@ -1,4 +1,4 @@
-import type { Complaint } from "@kapas/domain";
+import { subcategoriesByCategory, type Complaint } from "@kapas/domain";
 
 import { buildComplaint } from "./factory";
 import { DEMO_LOCATIONS } from "./locations";
@@ -13,9 +13,11 @@ export function extraDemoComplaints(count: number, startIndex: number): Complain
     const location = rng.pick(DEMO_LOCATIONS);
     const category = rng.pick(categories);
     const status = rng.pick(statuses);
-    const priority = rng.pick(["Standard", "High", "Urgent"] as const);
+    const priority = rng.pick(["Standard", "High", "Critical", "Emergency"] as const);
     const dailyRate = rng.pick([950, 1000, 1100, 1200]);
     const days = rng.pick([4, 6, 8, 10, 12]);
+    const subs = subcategoriesByCategory[category];
+    const subcategoryCode = subs && subs.length > 0 ? rng.pick(subs) : undefined;
 
     // Spread submittedAt dates realistically across 30 days up to 2026-08-28
     const dayOffset = Math.floor((offset * 29) / count);
@@ -27,19 +29,18 @@ export function extraDemoComplaints(count: number, startIndex: number): Complain
     return buildComplaint({
       index: startIndex + offset,
       categoryCode: category,
-      subcategoryCode: `${category}-GEN`,
+      subcategoryCode,
       status,
       priority,
-      privacyMode: rng.pick(["CONF", "ANON", "OPEN"] as const),
+      privacyMode: rng.pick(["CONF", "ANON", "IDEN"] as const),
       reporterType: "self",
       gender: rng.pick(["Female", "Male"] as const),
       affectedWorkerType: "seasonal-picker",
       affectedRange: rng.pick(["individual", "2-5", "6-20"] as const),
       location: { ...location, exactCoordinates: null },
       createdAt: dateIso,
-      submittedAt: dateIso,
-      currentDanger: priority === "Urgent",
-      description: `Cotton sector grievance regarding ${category} near ${location.villageLabel}, ${location.district}. Daily wage rate: PKR ${dailyRate}.`,
+      currentDanger: priority === "Emergency" || priority === "Critical",
+      description: `Cotton sector grievance regarding ${category} near ${location.villageLabel}, ${location.district}. Daily wage rate: PKR ${dailyRate} for ${days} days.`,
       descriptionUr: `${location.villageLabel}، ${location.district} میں کپاس کے کام سے متعلق شکایت درج کروائی گئی۔`,
       whenLabel: "This month",
       confidenceScore: 0.88,

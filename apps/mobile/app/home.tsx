@@ -35,12 +35,12 @@ function SupportingAction({ title, hint, icon, tone, onPress }: { title: string;
       accessibilityRole="button"
       accessibilityLabel={`${title}. ${hint}`}
       style={({ pressed }) => ({
-        minHeight: 74,
+        minHeight: 60,
         flexDirection: rtl ? "row-reverse" : "row",
         alignItems: "center",
         gap: 12,
         paddingHorizontal: 14,
-        paddingVertical: 8,
+        paddingVertical: 5,
         backgroundColor: semanticColors.surface,
         borderWidth: 1,
         borderColor: semanticColors.borderEssential,
@@ -49,10 +49,10 @@ function SupportingAction({ title, hint, icon, tone, onPress }: { title: string;
         transform: [{ scale: pressed ? 0.99 : 1 }],
       })}
     >
-      <View style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: wash, alignItems: "center", justifyContent: "center" }}>
-        <Ionicons name={icon} size={23} color={accent} />
+      <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: wash, alignItems: "center", justifyContent: "center" }}>
+        <Ionicons name={icon} size={21} color={accent} />
       </View>
-      <View style={{ flex: 1, gap: 2 }}>
+      <View style={{ flex: 1, gap: 0 }}>
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
@@ -313,12 +313,12 @@ export default function HomeScreen() {
           accessibilityRole="button"
           accessibilityLabel={`${t(locale, "home.reportProblem")}. ${t(locale, "home.reportHint")}`}
           style={({ pressed }) => ({
-            minHeight: 96,
+            minHeight: 76,
             flexDirection: rtl ? "row-reverse" : "row",
             alignItems: "center",
             gap: 14,
-            paddingHorizontal: 18,
-            paddingVertical: 12,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
             borderRadius: 8,
             backgroundColor: semanticColors.actionPrimary,
             opacity: pressed ? 0.9 : 1,
@@ -330,10 +330,10 @@ export default function HomeScreen() {
             elevation: 5,
           })}
         >
-          <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: "rgba(255,255,255,0.18)", alignItems: "center", justifyContent: "center" }}>
-            <Ionicons name="mic" size={29} color={semanticColors.onPrimary} />
+          <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.18)", alignItems: "center", justifyContent: "center" }}>
+            <Ionicons name="mic" size={26} color={semanticColors.onPrimary} />
           </View>
-          <View style={{ flex: 1, gap: 4 }}>
+          <View style={{ flex: 1, gap: 0 }}>
             <Text
               style={{
                 color: semanticColors.onPrimary,
