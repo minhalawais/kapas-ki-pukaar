@@ -19,14 +19,16 @@ const AUDIO_DIR = path.join(ROOT, "apps/mobile/assets/audio/ur");
 const PROVENANCE_DIR = path.join(AUDIO_DIR, ".provenance");
 const STAGING_DIR = path.join(__dirname, ".staging");
 const MANIFEST_PATH = path.join(__dirname, "prompts.json");
-const REVIEW_PATH = path.join(__dirname, "review.json");
+const REVIEW_PATH = process.env.VOICE_REVIEW_PATH
+  ? path.resolve(process.env.VOICE_REVIEW_PATH)
+  : path.join(__dirname, "review.json");
 const SPEECH_REGISTRY_PATH = path.join(ROOT, "packages/speech/src/promptManifest.ts");
 const ASSET_REGISTRY_PATH = path.join(ROOT, "apps/mobile/src/services/generatedPromptAssets.ts");
 
 const MODEL = "gemini-2.5-flash-preview-tts";
 const VOICE = "Sulafat";
-const VALIDATION_IDS = ["SC-welcome", "WF-identity", "WF-wag-pay", "WF-pes-sym", "WF-har-private"];
-const MASTERING_PROFILE = "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3";
+const VALIDATION_IDS = ["SC-welcome", "WF-identity", "WF-wag-pay", "WF-pes-sym", "WF-har-about"];
+const MASTERING_PROFILE = "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4";
 const ROTATION_STATE_PATH = path.join(__dirname, ".rotation-state.json");
 const KEY_DAILY_LIMIT = Math.max(1, Number(process.env.VOICE_KEY_DAILY_LIMIT || 10));
 const REQUEST_INTERVAL_MS = Math.max(
@@ -76,7 +78,7 @@ function parseArgs(argv) {
     else if (arg === "--reviewer") options.reviewer = argv[++index];
     else throw new Error(`Unknown argument: ${arg}`);
   }
-  if (!["generate", "status", "validate", "verify", "sync", "remaster", "approve-validation", "approve-audio"].includes(command)) throw new Error(`Unknown command: ${command}`);
+  if (!["generate", "status", "validate", "credentials", "verify", "sync", "remaster", "approve-validation", "approve-audio"].includes(command)) throw new Error(`Unknown command: ${command}`);
   if (options.scope && !["screens", "workflow", "rights"].includes(options.scope)) throw new Error("--scope must be screens, workflow, or rights");
   if (!Number.isFinite(options.limit) && options.limit !== Infinity || options.limit < 1) throw new Error("--limit must be a positive number");
   return options;
@@ -132,36 +134,62 @@ function fileName(id) {
 }
 
 const workflowOverrides = {
-  identity: "سب سے پہلے شناخت کا طریقہ چنیں۔ آپ شناختی کارڈ نمبر دے سکتے ہیں، یا اگر یہ محفوظ نہ لگے تو گمنام رپورٹ کر سکتے ہیں۔ دونوں صورتوں میں آپ آگے بڑھ سکتے ہیں۔",
+  identity: "سب سے پہلے شناخت کا طریقہ منتخب کریں۔ آپ اپنا شناختی کارڈ نمبر، اپنا موبائل نمبر، یا گمنام رپورٹ کرنے میں سے انتخاب کر سکتے ہیں۔",
   intro: "یہاں آپ کام سے متعلق مسئلہ محفوظ طریقے سے بتا سکتے ہیں۔ ایک وقت میں ایک سوال پوچھا جائے گا، اور آپ اپنی شناخت چھپا سکتے ہیں۔",
-  category: "آپ کس مسئلے کے بارے میں رپورٹ کرنا چاہتے ہیں؟ اجرت، سپرے، چوٹ یا حفاظت، ہراسانی، بچوں سے مزدوری، یا زبردستی کام میں سے مناسب تصویر چنیں۔ دوسرے مسئلے کے لیے مزید پر دبائیں۔",
+  category: "آپ کس مسئلے کے بارے میں رپورٹ کرنا چاہتے ہیں؟ اجرت، سپرے، چوٹ، ہراسانی، بال مزدوری، یا زبردستی کام میں سے مناسب تصویر چنیں۔ مزید اقسام یا دیگر مسئلے کے لیے نیچے والے بٹن دیکھیں۔",
   "category-more": "اپنے مسئلے کی قسم چنیں۔ ٹھیکیدار، کام کے گھنٹے، پانی یا بیت الخلا، ناانصافی، یا کوئی اور مسئلہ۔",
   voice: "اپنے الفاظ میں بتائیں کہ کیا ہوا۔ ریکارڈنگ لازمی نہیں؛ اگر بولنا محفوظ نہ لگے تو آپ اسے چھوڑ کر آگے بڑھ سکتے ہیں۔",
   "where-current": "یہ واقعہ کہاں ہوا؟ اگر آپ ابھی اسی جگہ کے قریب ہیں تو موجودہ مقام استعمال کر سکتے ہیں۔ ورنہ جگہ خود لکھیں۔ مقام صرف آپ کی اجازت کے بعد لیا جائے گا۔",
   "danger-notice": "یہ رپورٹ فوری نوعیت کی ہے۔ اگر محفوظ ہو تو پہلے خطرے والی جگہ سے دور ہو جائیں اور فوری مقامی مدد حاصل کریں۔ کپاس کی پکار آپ کی رپورٹ کو ترجیحی طور پر دکھائے گی۔",
   danger: "کیا ابھی کسی شخص کو فوری خطرہ ہے؟ اگر ہاں، اور ممکن ہو، تو پہلے محفوظ جگہ پر جائیں۔",
-  privacy: "آپ کی شناخت کیسے رکھی جائے؟ گمنام میں نام نہیں بتایا جائے گا۔ خفیہ میں نام صرف مجاز ٹیم دیکھے گی۔ یا آپ نام ظاہر کرنے کی اجازت دے سکتے ہیں۔",
+  privacy: "آپ کی شناخت کیسے رکھی جائے؟ جواب کے لیے گمنام، خفیہ، یا شناخت کے ساتھ میں سے انتخاب کریں۔",
   evidence: "اگر محفوظ ہو تو تصویر یا دستاویز شامل کر سکتے ہیں۔ یہ لازمی نہیں، اور آپ اسے چھوڑ سکتے ہیں۔",
-  contact: "کیا آپ سے رابطہ کرنا محفوظ ہے؟ کال، پیغام، صرف کال، متبادل رابطہ، یا کوئی رابطہ نہیں میں سے انتخاب کریں۔",
+  contact: "کیا آپ سے رابطہ کرنا محفوظ ہے؟ جواب کے لیے کال محفوظ، پیغام محفوظ، صرف کال، پیغام نہ بھیجیں، یا رابطہ نہ کریں میں سے انتخاب کریں۔",
   "ai-processing": "آپ کی دی ہوئی معلومات سمجھی جا رہی ہیں۔ براہ کرم چند لمحے انتظار کریں۔",
   "ai-understanding": "خلاصہ سن یا پڑھ کر دیکھیں۔ اگر بات درست ہے تو تصدیق کریں، ورنہ واپس جا کر بدلیں۔",
   review: "اپنی رپورٹ جمع کرانے سے پہلے معلومات دیکھ لیں۔ ضرورت ہو تو کسی حصے کو بدلیں، پھر جمع کرائیں۔",
-  "har-private": "یہ حساس بات ہو سکتی ہے۔ کیا آپ کسی محفوظ اور الگ جگہ پر جا کر آگے بڑھنا چاہتے ہیں؟ آپ جب چاہیں واپس جا سکتے ہیں۔",
-  "har-about": "صرف اتنا بتائیں جتنا آپ کو محفوظ لگے۔ کیا یہ سلوک آپ کے ساتھ ہوا ہے؟",
+  "har-about": "کس قسم کا سلوک ہوا؟ جواب کے لیے گالی یا دھمکی، جنسی بات یا اشارہ، ناپسندیدہ چھونا، پیچھا کرنا، بدلے کی دھمکی، یا کوئی اور بات چنیں۔ صرف اتنا بتائیں جتنا آپ کو محفوظ لگے۔",
   "har-present": "کیا وہ شخص ابھی آپ کو نقصان پہنچا سکتا ہے؟ اگر ہاں تو پہلے اپنی حفاظت کو ترجیح دیں۔",
   "har-female": "کیا آپ خاتون نمائندے سے بات کرنا پسند کریں گے؟ یہ انتخاب آپ کا ہے۔",
-  "pes-sym": "کیا سانس لینے میں مشکل، چکر، قے، یا آنکھوں اور جلد میں جلن ہو رہی ہے؟ جو علامات ہیں وہ چنیں۔ شدید حالت میں پہلے فوری طبی مدد لیں۔",
-  "chl-who": "یہ سوال بچے کی حفاظت کے لیے ہے۔ کیا رپورٹ آپ کے اپنے بارے میں ہے یا کسی دوسرے بچے کے بارے میں؟ نام بتانا لازمی نہیں۔",
-  "chl-risk": "کیا بچہ ابھی خطرے میں ہے؟ اگر ہاں تو پہلے اسے محفوظ جگہ اور قابل اعتماد بالغ کی مدد دلانے کی کوشش کریں۔",
+  "pes-what": "سپرے یا کیمیکل کے ساتھ کیا مسئلہ ہوا؟ جواب کے لیے طبیعت خراب ہونا، فوراً کام کرنا، حفاظتی سامان نہ ملنا، کیمیکل گرنا، قریبی کھیت سے بو، کیمیکل ملانا، یا کوئی اور مسئلہ چنیں۔",
+  "pes-sym": "کیا کوئی علامت ہے؟ جواب کے لیے سانس میں دشواری، چکر، قے، جلن، بے ہوشی، کوئی اور علامت، یا کوئی علامت نہیں چنیں۔ شدید حالت میں پہلے طِبّی مدد لیں۔",
+  "pes-med": "کیا طِبّی مدد ملی؟ جواب کے لیے ہاں، فوری طِبّی مدد چاہیے، طِبّی مدد مل گئی، یا ابھی طِبّی مدد نہیں ملی چنیں۔",
+  "chl-who": "یہ کس کے بارے میں ہے؟ جواب کے لیے میں خود، میرا بچہ، گھر کا بچہ، کوئی اور، یا بتانا محفوظ نہیں میں سے انتخاب کریں۔",
+  "chl-risk": "کیا ابھی کوئی خطرہ ہے؟ اگر ہاں تو پہلے محفوظ جگہ پر جائیں اور قابل اعتماد شخص کی مدد لیں۔",
   "fol-forced": "کیا کسی شخص سے اس کی مرضی کے خلاف کام کروایا جا رہا ہے؟ آپ نام بتائے بغیر جواب دے سکتے ہیں۔",
   "fol-threats": "کیا کام نہ کرنے پر دھمکی، سزا، مارپیٹ، یا نقصان کا خوف ہے؟",
   "fol-debt": "کیا قرض، روکی ہوئی اجرت، شناختی کاغذ رکھنے، یا آنے جانے کی پابندی کے ذریعے کام پر مجبور کیا جا رہا ہے؟",
   "fol-leave": "کیا وہ شخص اپنی مرضی سے کام یا رہنے کی جگہ چھوڑ سکتا ہے؟",
+  "con-what": "ٹھیکیدار کا کیا مسئلہ ہے؟ جواب کے لیے ادائیگی، دھمکی، بھرتی فیس یا قرض، جھوٹا وعدہ، کام کی حالت، کاغذات رکھنا، آمدورفت روکنا، یا کوئی اور چنیں۔",
+  "dis-what": "ناانصافی کس قسم کی ہے؟ جواب کے لیے جنس، برادری، مہاجر ہونا، عمر، معذوری، حمل، شکایت کرنا، یا کوئی اور وجہ چنیں۔",
+  "hse-what": "حفاظت کا کیا مسئلہ ہے؟ جواب کے لیے چوٹ، غیر محفوظ سامان، گرمی، آمدورفت، پانی یا آرام نہ ملنا، طِبّی امداد نہ ملنا، یا کوئی اور چنیں۔",
+  "where-province": "کون سا صوبہ یا علاقہ؟ جواب کے لیے پنجاب، سندھ، خیبر پختونخوا، بلوچستان، اسلام آباد، گلگت بلتستان، یا آزاد کشمیر چنیں۔",
 };
+
+function extraCatalog() {
+  return [
+    {
+      id: "WF-identity-cnic",
+      scope: "workflow",
+      ref: "identity-cnic",
+      file: fileName("WF-identity-cnic"),
+      scriptUrdu: "اپنا 13 ہندسوں کا قومی شناختی کارڈ نمبر لکھیں اور آگے بڑھیں کا بٹن دبائیں۔",
+      tone: "guided-question",
+    },
+    {
+      id: "WF-identity-phone",
+      scope: "workflow",
+      ref: "identity-phone",
+      file: fileName("WF-identity-phone"),
+      scriptUrdu: "اپنا 11 ہندسوں کا موبائل نمبر لکھیں اور آگے بڑھیں کا بٹن دبائیں۔",
+      tone: "guided-question",
+    },
+  ];
+}
 
 function workflowCatalog(ur) {
   const files = fs.readdirSync(WORKFLOW_DIR)
-    .filter((name) => name.endsWith(".ts") && !["index.ts", "other.ts"].includes(name))
+    .filter((name) => name.endsWith(".ts") && name !== "index.ts")
     .sort();
   const prompts = [];
   for (const file of files) {
@@ -178,7 +206,7 @@ function workflowCatalog(ur) {
       if (!scriptUrdu) {
         const pieces = [sentence(translated(ur, promptKey))];
         if (helperKey) pieces.push(sentence(translated(ur, helperKey)));
-        if (optionKeys.length > 1 && optionKeys.length <= 6) {
+        if (optionKeys.length > 1 && optionKeys.length <= 10) {
           pieces.push(`جواب کے لیے ${optionKeys.map((key) => translated(ur, key)).join("، ")} میں سے انتخاب کریں۔`);
         }
         scriptUrdu = pieces.join(" ");
@@ -212,19 +240,20 @@ function rightsCatalog(ur) {
 
 function screenCatalog() {
   return [
-    ["SC-welcome", "welcome", "السلام علیکم، میں کپاس کی پکار ہوں۔ یہاں کپاس کے مزدور کام سے متعلق مسئلہ محفوظ طریقے سے بتا سکتے ہیں اور اپنے حقوق جان سکتے ہیں۔ آپ کی مرضی کے بغیر کوئی حساس بات شیئر نہیں کی جائے گی۔", "warm-welcome"],
-    ["SC-home", "home", "السلام علیکم۔ کپاس کی پکار کپاس کے مزدوروں کے لیے محفوظ مدد ہے۔ یہاں آپ کام سے متعلق مسئلہ آواز سے بتا سکتے ہیں، اپنی شکایت کی پیش رفت دیکھ سکتے ہیں، اور اپنے حقوق آسان الفاظ میں جان سکتے ہیں۔", "warm-guide"],
+    ["SC-welcome", "welcome", "السلام علیکم۔ آگے بڑھنے کے لیے اپنی زبان چنیں۔ وہ زبان منتخب کریں جسے پڑھنا اور سننا آپ کے لیے آسان ہو۔", "warm-welcome"],
+    ["SC-home", "home", "السلام علیکم۔ کپاس کی پکار میں خوش آمدید۔ یہ سہولت کپاس کے شعبے میں کام کرنے والے مزدوروں کے لیے، بین الاقوامی ادارہ محنت، یعنی آئی ایل او، کے تعاون سے تیار کی گئی ہے۔ یہاں آپ آسان اور مرحلہ وار سوالوں کے جواب دے کر اجرت، کام کی حفاظت، ہراسانی، امتیازی سلوک، یا کام سے متعلق کسی دوسرے مسئلے کی شکایت درج کر سکتے ہیں۔ آپ اپنی درج کی گئی شکایت کی تازہ صورتِ حال دیکھ سکتے ہیں اور اپنے بنیادی حقوق کے بارے میں آسان اور مفید رہنمائی حاصل کر سکتے ہیں۔ آپ کی فراہم کردہ معلومات عزت، احتیاط اور ذمہ داری کے ساتھ سنبھالی جائیں گی۔ اب آپ کیا کرنا چاہتے ہیں؟ مسئلہ بتانے، اپنی شکایت دیکھنے، یا اپنے حقوق جاننے کے لیے متعلقہ بٹن دبائیں۔", "warm-guide"],
     ["SC-permission", "permission", "اپنی بات ریکارڈ کرنے کے لیے مائیک کی اجازت دیں۔ ریکارڈنگ صرف آپ کے دبانے پر شروع ہوگی، اور آپ بغیر ریکارڈنگ کے بھی آگے بڑھ سکتے ہیں۔", "privacy"],
     ["SC-success", "success", "آپ کی رپورٹ موصول ہو گئی ہے۔ شکایت کا نمبر محفوظ رکھیں تاکہ آپ بعد میں پیش رفت دیکھ سکیں۔", "calm-success"],
     ["SC-offline", "offline", "آپ کی رپورٹ اس فون میں محفوظ ہے، لیکن ابھی بھیجی نہیں گئی۔ انٹرنیٹ ملنے پر دوبارہ کوشش کی جائے گی۔ رپورٹ کو حذف نہ کریں۔", "calm-warning"],
     ["SC-complaints", "complaints", "یہاں آپ اپنی شکایات کی موجودہ حالت، اگلا قدم، اور تازہ پیش رفت دیکھ سکتے ہیں۔ شکایت کھولنے کے لیے اس پر دبائیں۔", "informative"],
-    ["SC-rights-explorer", "rights", "آپ کس حق کے بارے میں جاننا چاہتے ہیں؟ اجرت، سپرے، گرمی اور آرام، چوٹ، برابری، یا بچوں کی حفاظت کی تصویر یا کارڈ چنیں۔", "rights-guide"],
+    ["SC-complaint-detail", "complaint-detail", "یہ آپ کی درج کردہ شکایت کی تفصیل ہے۔ یہاں آپ شکایت کی موجودہ صورتِ حال، اگلا قدم، اور جمع کروائی گئی معلومات دیکھ سکتے ہیں۔", "informative"],
+    ["SC-rights-explorer", "rights", "اپنے حقوق کے بارے میں معلوم کریں۔ اجرت، سپرے، گرمی اور آرام، چوٹ، برابری، یا بچوں کے تحفظ میں سے مناسب آپشن منتخب کریں۔", "rights-guide"],
   ].map(([id, ref, scriptUrdu, tone]) => ({ id, scope: "screen", ref, file: fileName(id), scriptUrdu, tone }));
 }
 
 function buildCatalog() {
   const ur = readJson(LOCALE_PATH);
-  const prompts = [...screenCatalog(), ...workflowCatalog(ur), ...rightsCatalog(ur)];
+  const prompts = [...screenCatalog(), ...workflowCatalog(ur), ...extraCatalog(), ...rightsCatalog(ur)];
   const ids = new Set();
   for (const prompt of prompts) {
     if (ids.has(prompt.id)) throw new Error(`Duplicate voice prompt id: ${prompt.id}`);
@@ -257,7 +286,7 @@ function stateFor(prompt) {
   const expected = expectedHashes(prompt);
   if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size <= 1024) return { status: "missing", provenance };
   if (!provenance) return { status: "provisional", provenance };
-  if (provenance.model !== MODEL || provenance.voice !== VOICE || provenance.scriptSha256 !== expected.scriptSha256 || provenance.directionSha256 !== expected.directionSha256 || provenance.masteringSha256 !== expected.masteringSha256 || provenance.fileSha256 !== sha256(fs.readFileSync(outputPath))) {
+  if (provenance.model !== MODEL || provenance.voice !== VOICE || provenance.scriptSha256 !== expected.scriptSha256 || provenance.directionSha256 !== expected.directionSha256 || provenance.fileSha256 !== sha256(fs.readFileSync(outputPath))) {
     return { status: "stale", provenance };
   }
   return { status: provenance.approvalStatus === "approved" ? "approved" : "generated", provenance };
@@ -268,7 +297,7 @@ function currentReview() {
 }
 
 function writeGeneratedFiles(prompts) {
-  const workflow = Object.fromEntries(prompts.filter((p) => p.scope === "workflow").map((p) => [p.ref, p.id]));
+  const workflow = Object.fromEntries(prompts.filter((p) => p.scope === "workflow" && !["identity-cnic", "identity-phone"].includes(p.ref)).map((p) => [p.ref, p.id]));
   const screens = Object.fromEntries(prompts.filter((p) => p.scope === "screen").map((p) => [p.ref, p.id]));
   const rights = {};
   for (const prompt of prompts.filter((p) => p.scope === "rights")) {
@@ -486,7 +515,7 @@ async function requestAudio(prompt, key, attempt = 0) {
     headers: { "x-goog-api-key": key, "content-type": "application/json" },
     signal: AbortSignal.timeout(90000),
     body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: `${STYLE_PROMPT}\n\nTRANSCRIPT (read verbatim):\n${prompt.scriptUrdu}` }] }],
+      contents: [{ role: "user", parts: [{ text: `${STYLE_PROMPT}\nDo not fade out or cut the last word. Speak the full transcript through the final syllable, then hold a one-second silent pause.\n\nTRANSCRIPT (read verbatim):\n${prompt.scriptUrdu}` }] }],
       generationConfig: {
         responseModalities: ["AUDIO"],
         speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
@@ -526,7 +555,7 @@ function encodeMp3(pcm, outputPath) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   const temp = path.join(os.tmpdir(), `kapas-voice-${crypto.randomUUID()}.pcm`);
   fs.writeFileSync(temp, pcm);
-  const filters = "silenceremove=start_periods=1:start_duration=0.08:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_duration=0.08:start_threshold=-60dB,areverse,loudnorm=I=-18:TP=-2:LRA=7,apad=pad_dur=0.35";
+  const filters = "silenceremove=start_periods=1:start_duration=0.08:start_threshold=-50dB,loudnorm=I=-18:TP=-2:LRA=7,apad=pad_dur=1.0";
   const result = spawnSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1", "-i", temp, "-codec:a", "libmp3lame", "-b:a", "64k", "-ar", "24000", "-ac", "1", "-af", filters, outputPath], { encoding: "utf8" });
   fs.rmSync(temp, { force: true });
   if (result.status !== 0) throw new Error(`ffmpeg failed: ${result.stderr}`);
@@ -557,9 +586,9 @@ function inspectAudio(file, prompt) {
 
 function validateCatalog(prompts) {
   const errors = [];
-  if (prompts.length !== 109) errors.push(`Expected 109 prompts, found ${prompts.length}`);
+  if (prompts.length !== 122) errors.push(`Expected 122 prompts, found ${prompts.length}`);
   const counts = prompts.reduce((result, prompt) => ({ ...result, [prompt.scope]: (result[prompt.scope] || 0) + 1 }), {});
-  if (counts.screen !== 7 || counts.workflow !== 50 || counts.rights !== 52) errors.push(`Unexpected scope counts: ${JSON.stringify(counts)}`);
+  if (counts.screen !== 8 || counts.workflow !== 62 || counts.rights !== 52) errors.push(`Unexpected scope counts: ${JSON.stringify(counts)}`);
   for (const prompt of prompts) {
     if (!/[\u0600-\u06ff]/.test(prompt.scriptUrdu)) errors.push(`${prompt.id} has no Urdu text`);
     if (prompt.scriptUrdu.includes("، اور میں سے انتخاب کریں")) errors.push(`${prompt.id} contains an ambiguous generic other option`);
@@ -779,7 +808,7 @@ function remasterExisting(prompts) {
     const outputPath = path.join(AUDIO_DIR, prompt.file);
     if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size <= 1024) continue;
     const tempPath = `${outputPath}.${process.pid}.tmp.mp3`;
-    const filters = "loudnorm=I=-18:TP=-2:LRA=7,apad=pad_dur=0.35";
+    const filters = "loudnorm=I=-18:TP=-2:LRA=7,apad=pad_dur=1.0";
     const result = spawnSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", outputPath, "-codec:a", "libmp3lame", "-b:a", "64k", "-ar", "24000", "-ac", "1", "-af", filters, tempPath], { encoding: "utf8" });
     if (result.status !== 0) throw new Error(`ffmpeg remaster failed for ${prompt.file}: ${result.stderr}`);
     inspectAudio(tempPath);
@@ -810,6 +839,11 @@ async function main() {
   }
   if (options.command === "status") {
     console.log(JSON.stringify({ model: MODEL, voice: VOICE, total: prompts.length, ...summarize(prompts), voiceValidation: currentReview().voiceValidation }, null, 2));
+    return;
+  }
+  if (options.command === "credentials") {
+    const keys = loadApiKeys();
+    console.log(JSON.stringify({ configured: keys.length, aliases: keys.map((key) => key.alias) }, null, 2));
     return;
   }
   if (options.command === "sync") {

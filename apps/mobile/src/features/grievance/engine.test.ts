@@ -20,15 +20,16 @@ describe("grievance conversation engine", () => {
       "wag-what": "unpaid",
       "wag-pay": "piece",
       "wag-who": "contractor",
+      "wag-threat": "no",
     };
     const path = walkPath(workflowNodeMap, "category", answers);
-    expect(path.slice(0, 5)).toEqual(["category", "wag-what", "wag-pay", "wag-who", "voice"]);
+    expect(path.slice(0, 6)).toEqual(["category", "wag-what", "wag-pay", "wag-who", "wag-threat", "voice"]);
   });
 
-  it("starts with identity before the complaint introduction", () => {
+  it("starts with identity before complaint categories", () => {
     const draft = emptyDraft("2026-08-19T12:00:00.000Z");
     expect(draft.stepId).toBe("identity");
-    expect(resolveNext(getWorkflowNode("identity")!, { identity: "provided" })).toBe("intro");
+    expect(resolveNext(getWorkflowNode("identity")!, { identity: "provided" })).toBe("category");
   });
 
   it("offers GPS confirmation and nationwide manual location entry", () => {
@@ -56,7 +57,15 @@ describe("grievance conversation engine", () => {
   it("asks group range only when others are affected", () => {
     const others = getWorkflowNode("others")!;
     expect(resolveNext(others, { others: "yes" })).toBe("others-range");
-    expect(resolveNext(others, { others: "no" })).toBe("danger");
+    expect(resolveNext(others, { others: "no", category: "WAG", "wag-threat": "no" })).toBe("privacy");
+    expect(resolveNext(others, { others: "no", category: "PES" })).toBe("danger");
+    expect(resolveNext(others, { others: "no", category: "WAG", "wag-threat": "yes" })).toBe("danger");
+  });
+
+  it("skips danger for non-safety wage complaints after counting others", () => {
+    const range = getWorkflowNode("others-range")!;
+    expect(resolveNext(range, { category: "WAG", "wag-threat": "no", "others-range": "2-5" })).toBe("privacy");
+    expect(resolveNext(range, { category: "HSE", "others-range": "2-5" })).toBe("danger");
   });
 
   it("routes danger yes through the emergency notice and ANON past contact", () => {

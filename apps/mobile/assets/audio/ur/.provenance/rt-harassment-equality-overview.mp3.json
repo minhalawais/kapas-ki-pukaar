@@ -6,14 +6,14 @@
   "scriptUrdu": "ہراسانی اور برابر سلوک۔ تشدد، جنسی ہراسانی، دھمکی، بدلہ اور امتیازی سلوک قابل قبول نہیں۔",
   "scriptSha256": "aeeccf3a5e0341b09d360fcbb1f3c68e7ee904f39bee232166a15aa1d30aad8a",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "3baf5f4a4c098de1e52c95d2cbf759785cc45c89ae32d09dc241bb0b4d4b4389",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "c148055d38a78b651dbd1a7f6e2151091803776864c5565dc16513ebdc503e69",
   "generatedAt": "2026-08-23T09:32:29.839Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 13.283,
     "integratedLufs": -18.33,
     "truePeakDb": -2.28
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:23.830Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

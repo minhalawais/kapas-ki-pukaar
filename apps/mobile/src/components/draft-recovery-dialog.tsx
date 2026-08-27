@@ -7,6 +7,7 @@ import { useReducedMotion } from "../hooks/use-reduced-motion";
 import { isRTL } from "../i18n/rtl";
 import { useLocaleStore } from "../stores/localeStore";
 import { fontFamily, mobileType, radiusUsage, semanticColors } from "../theme/tokens";
+import { localizedTextMetrics } from "../theme/urdu-text";
 
 import { PrimaryCta } from "./primary-cta";
 
@@ -32,6 +33,10 @@ export function DraftRecoveryDialog({
   const reducedMotion = useReducedMotion();
   const family = isRTL(locale) ? fontFamily.urduUi : fontFamily.ui;
   const align = isRTL(locale) ? "right" : "left";
+  const titleMetrics = localizedTextMetrics(locale, mobileType.h1.size, mobileType.h1.line, "heading");
+  const bodyMetrics = localizedTextMetrics(locale, mobileType.body.size, mobileType.body.line);
+  const helperMetrics = localizedTextMetrics(locale, mobileType.helper.size, mobileType.helper.line);
+  const buttonMetrics = localizedTextMetrics(locale, mobileType.button.size, mobileType.button.line);
 
   return (
     <Modal
@@ -69,11 +74,10 @@ export function DraftRecoveryDialog({
           <Text
             style={{
               color: semanticColors.textPrimary,
-              fontSize: mobileType.h1.size,
-              lineHeight: mobileType.h1.line,
               fontWeight: "700",
               fontFamily: family,
               textAlign: align,
+              ...titleMetrics,
             }}
           >
             {t(locale, confirming ? "draft.discardConfirmTitle" : "draft.title")}
@@ -81,10 +85,9 @@ export function DraftRecoveryDialog({
           <Text
             style={{
               color: semanticColors.textPrimary,
-              fontSize: mobileType.body.size,
-              lineHeight: mobileType.body.line,
               fontFamily: family,
               textAlign: align,
+              ...bodyMetrics,
             }}
           >
             {t(locale, confirming ? "draft.discardConfirmBody" : "draft.body")}
@@ -93,10 +96,9 @@ export function DraftRecoveryDialog({
             <Text
               style={{
                 color: semanticColors.textPrimary,
-                fontSize: mobileType.helper.size,
-                lineHeight: mobileType.helper.line,
                 fontFamily: family,
                 textAlign: align,
+                ...helperMetrics,
               }}
             >
               {t(locale, "common.error")}
@@ -128,9 +130,8 @@ export function DraftRecoveryDialog({
                 <Text
                   style={{
                     color: semanticColors.textPrimary,
-                    fontSize: mobileType.button.size,
-                    lineHeight: mobileType.button.line,
                     fontFamily: family,
+                    ...buttonMetrics,
                   }}
                 >
                   {t(locale, "draft.notNow")}
@@ -150,10 +151,9 @@ export function DraftRecoveryDialog({
                 <Text
                   style={{
                     color: semanticColors.textSecondary,
-                    fontSize: mobileType.helper.size,
-                    lineHeight: mobileType.helper.line,
                     fontFamily: family,
                     textDecorationLine: "underline",
+                    ...helperMetrics,
                   }}
                 >
                   {t(locale, "draft.discard")}

@@ -1,0 +1,38 @@
+# Keep EAS upload lean for the mobile app build.
+# NOTE: when .easignore exists, EAS ignores .gitignore — list everything here.
+
+# Other apps / docs in the monorepo
+apps/puwf-portal/
+docs/
+design-qa.md
+CHANGELOG.md
+CONTRIBUTING.md
+README.md
+
+# Build / cache artifacts
+.next/
+build-artifacts/
+playwright-report/
+test-results/
+coverage/
+.turbo/
+.artifacts/
+tmp/
+*.tsbuildinfo
+.git/
+node_modules/
+**/node_modules/
+
+# Local Android build outputs (must not upload — bloat + break Gradle)
+apps/mobile/android/build/
+apps/mobile/android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/android/.kotlin/
+apps/mobile/android/local.properties
+apps/mobile/android/.idea/
+apps/mobile/dist-voice-check-*/
+
+# Voice tooling noise
+tooling/voice-prompts/.staging/
+tooling/voice-prompts/.rotation-state.json
+tooling/voice-prompts/.generation-run.log

@@ -1,6 +1,8 @@
 import { Image, type ImageStyle, type StyleProp } from "react-native";
 
-import MARK from "../../assets/logo-mark.png";
+import MARK from "../../assets/logo-mark-inline.png";
+
+const MARK_ASPECT_RATIO = 632 / 497;
 
 /** Cotton, worker, and protected-voice brand mark. Do not mirror in RTL. */
 export function KapasMark({
@@ -17,7 +19,7 @@ export function KapasMark({
       accessibilityIgnoresInvertColors
       importantForAccessibility="no"
       resizeMode="contain"
-      style={[{ width: size, height: size }, style]}
+      style={[{ width: Math.round(size * MARK_ASPECT_RATIO), height: size }, style]}
     />
   );
 }

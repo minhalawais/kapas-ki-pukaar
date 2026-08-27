@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { canSubmitDraft, workerCategoryCodes, type WorkerCategoryCode } from "@kapas/domain";
 import { t, type MessageKey } from "@kapas/localization";
 import { complaintService } from "@kapas/mock-services";
+import { workflowPromptId } from "@kapas/speech";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,36 +17,17 @@ import { ScreenShell } from "../../src/components/screen-shell";
 import { ProgressIndicator } from "../../src/features/grievance/components/ProgressIndicator";
 import { QuestionRenderer } from "../../src/features/grievance/components/QuestionRenderer";
 import { useGrievanceWizard } from "../../src/hooks/use-grievance-wizard";
+import { useAutoPromptId } from "../../src/hooks/use-prompt-playback";
 import { expoIdentityService } from "../../src/services/expoIdentityService";
+import { imagePreloadService } from "../../src/services/imagePreloadService";
+import { promptAudioService } from "../../src/services/promptAudioService";
 import { useConnectivityStore } from "../../src/stores/connectivityStore";
 import { useGrievanceDraftStore } from "../../src/stores/grievanceDraftStore";
 import { useLocaleStore } from "../../src/stores/localeStore";
 import { fontFamily, semanticColors } from "../../src/theme/tokens";
+import { localizedTextMetrics } from "../../src/theme/urdu-text";
 
-function CategoryHeader({ locale, ratio, onBack }: { locale: "ur" | "en"; ratio: number; onBack: () => void }) {
-  const rtl = locale === "ur";
-  return (
-    <View style={{ gap: 10 }}>
-      <View style={{ height: 58, alignItems: "center", justifyContent: "center", position: "relative" }}>
-        <Pressable
-          onPress={onBack}
-          accessibilityRole="button"
-          accessibilityLabel={t(locale, "common.back")}
-          style={({ pressed }) => ({ position: "absolute", start: 0, width: 46, height: 46, borderRadius: 23, backgroundColor: "#EEE9D9", alignItems: "center", justifyContent: "center", opacity: pressed ? 0.72 : 1, zIndex: 1 })}
-        >
-          <Ionicons name={rtl ? "arrow-forward" : "arrow-back"} size={25} color={semanticColors.textPrimary} />
-        </Pressable>
-        <View style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-          <KapasMark size={38} />
-          <Text style={{ color: semanticColors.actionPrimary, fontSize: 20, lineHeight: 34, fontFamily: rtl ? fontFamily.urduHeading : fontFamily.uiBold }}>
-            {t(locale, "app.name")}
-          </Text>
-        </View>
-      </View>
-      <ProgressIndicator ratio={ratio} />
-    </View>
-  );
-}
+
 
 function othersLabel(locale: "ur" | "en", value?: string): string {
   if (value === "individual") {
@@ -78,10 +60,21 @@ export default function GrievanceScreen() {
   const draft = wizard.draft;
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+  const [manualSpeaking, setManualSpeaking] = useState(false);
+
+  const currentPromptId = node?.id ? workflowPromptId(node.id) : undefined;
+  const autoPlayback = useAutoPromptId(currentPromptId);
+  const speaking = manualSpeaking || autoPlayback.state === "loading" || autoPlayback.state === "playing";
+  const loadingAudio = autoPlayback.state === "loading";
+
   const routeCategory = typeof params.category === "string" && workerCategoryCodes.includes(params.category as WorkerCategoryCode)
     ? params.category as WorkerCategoryCode
     : undefined;
   const requestedCategory = routeCategory ?? categoryIntent ?? undefined;
+
+  useEffect(() => {
+    void imagePreloadService.preloadGrievance();
+  }, []);
 
   useEffect(() => {
     if (node?.id !== "category" || wizard.selected || !requestedCategory) {
@@ -91,6 +84,17 @@ export default function GrievanceScreen() {
   }, [node?.id, requestedCategory, setCategoryIntent, wizard.select, wizard.selected]);
 
   useEffect(() => () => setCategoryIntent(null), [setCategoryIntent]);
+  useEffect(() => () => { void promptAudioService.stop(); }, []);
+
+  const toggleSpeech = () => {
+    if (speaking) {
+      void promptAudioService.stop().finally(() => setManualSpeaking(false));
+      return;
+    }
+    if (locale !== "ur" || !currentPromptId) return;
+    setManualSpeaking(true);
+    void promptAudioService.playPrompt(currentPromptId).finally(() => setManualSpeaking(false));
+  };
 
   const handleBack = () => {
     void wizard.goBack().then((result) => {
@@ -112,23 +116,17 @@ export default function GrievanceScreen() {
           },
           {
             labelKey: "grievance.review.category" as const,
-            value: draft.category ? t(locale, `category.${draft.category}` as MessageKey) : t(locale, "common.empty"),
+            value: draft.category ? t(locale, `category.${draft.category}` as MessageKey) : t(locale, "common.notSure"),
             editNodeId: "category",
           },
           {
             labelKey: "grievance.review.when" as const,
-            value: draft.incident.whenLabel
-              ? t(locale, `when.${draft.incident.whenLabel}` as MessageKey)
-              : t(locale, "common.notSure"),
+            value: draft.incident.whenLabel ? t(locale, `when.${draft.incident.whenLabel}` as MessageKey) : t(locale, "common.notSure"),
             editNodeId: "when",
           },
           {
             labelKey: "grievance.review.where" as const,
-            value: draft.location.formattedAddress
-              ?? (draft.location.placeLabel
-                ? `${draft.location.placeLabel}${draft.location.district ? ` · ${draft.location.district}` : ""}${draft.location.province ? ` · ${draft.location.province}` : ""}`
-                : undefined)
-              ?? t(locale, "common.notSure"),
+            value: draft.location.source === "GPS" ? t(locale, "where.currentBody") : draft.location.manualAddress ?? t(locale, "common.notSure"),
             editNodeId: "where-current",
           },
           {
@@ -138,7 +136,7 @@ export default function GrievanceScreen() {
           },
           {
             labelKey: "grievance.review.danger" as const,
-            value: draft.incident.immediateDanger ? t(locale, "danger.yes") : t(locale, "danger.no"),
+            value: draft.incident.immediateDanger ? t(locale, `danger.${draft.incident.immediateDanger}` as MessageKey) : t(locale, "common.notSure"),
             editNodeId: "danger",
           },
           {
@@ -173,13 +171,56 @@ export default function GrievanceScreen() {
         ]
       : undefined;
 
+  const getHeaderTitle = (): string => {
+    if (!node) return t(locale, "grievance.title");
+    if (node.id === "identity") {
+      return locale === "ur" ? "شناخت کا طریقہ" : "Identity Method";
+    }
+    if (node.id === "category") {
+      return locale === "ur" ? "مسئلے کی قسم" : "Problem Category";
+    }
+    if (draft?.category) {
+      return t(locale, `category.${draft.category}` as MessageKey);
+    }
+    if (node.section === "facts") {
+      return locale === "ur" ? "واقعہ کی تفصیلات" : "Incident Details";
+    }
+    if (node.section === "safety") {
+      return locale === "ur" ? "حفاظت اور رازداری" : "Safety & Privacy";
+    }
+    if (node.section === "review") {
+      return locale === "ur" ? "شکایت کا جائزہ" : "Review Grievance";
+    }
+    return t(locale, "grievance.title");
+  };
+
+  const getHeaderSubtitle = (): string => {
+    if (!node) return t(locale, "grievance.headerHelp");
+    const completed = Number.isFinite(wizard.progress.completed) ? wizard.progress.completed : 0;
+    const total = Number.isFinite(wizard.progress.total) && wizard.progress.total > 0 ? wizard.progress.total : 6;
+    const currentStepNum = Math.min(completed + 1, total);
+    if (node.type === "review") {
+      return locale === "ur" ? "آخری قدم - جائزہ اور تصدیق" : "Final step - Review & submit";
+    }
+    return locale === "ur"
+      ? `قدم ${currentStepNum} از ${total}`
+      : `Step ${currentStepNum} of ${total}`;
+  };
+
   return (
     <ScreenShell
-      header={node?.id === "category"
-        ? <CategoryHeader locale={locale} ratio={wizard.progress.ratio} onBack={handleBack} />
-        : (
-          <LightTopBar titleKey="grievance.title" subtitleKey="grievance.headerHelp" icon="mic-outline" progress={wizard.progress.ratio} onBack={handleBack} />
-        )}
+      fullWidthHeader
+      header={
+        <LightTopBar
+          fullWidth
+          title={getHeaderTitle()}
+          showBack
+          onBack={handleBack}
+          speaking={speaking}
+          loadingAudio={loadingAudio}
+          onToggleSpeech={toggleSpeech}
+        />
+      }
       footer={node && node.type !== "ai-processing" && node.type !== "cnic" && node.type !== "current-location" ? (
         <ActionDock>
           <PrimaryCta

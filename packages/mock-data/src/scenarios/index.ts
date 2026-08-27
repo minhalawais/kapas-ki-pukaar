@@ -29,6 +29,10 @@ export function goldenComplaints(): Complaint[] {
   return goldenScenarioIds.map((id) => factories[id]());
 }
 
+export function mobileDemoComplaints(): Complaint[] {
+  return ["GS-01", "GS-02", "GS-06", "GS-10"].map((id) => factories[id as GoldenScenarioId]());
+}
+
 export function getGoldenComplaint(id: GoldenScenarioId): Complaint {
   return factories[id]();
 }

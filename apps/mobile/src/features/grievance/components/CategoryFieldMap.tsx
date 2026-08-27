@@ -62,7 +62,7 @@ export function CategoryFieldMap({ promptKey, options, selected, onSelect }: { p
               })}
             >
               {active ? (
-                <View style={{ position: "absolute", top: 10, end: 10, width: 32, height: 32, borderRadius: 16, backgroundColor: semanticColors.actionPrimary, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ position: "absolute", top: 10, ...(rtl ? { right: 10 } : { left: 10 }), width: 32, height: 32, borderRadius: 16, backgroundColor: semanticColors.actionPrimary, alignItems: "center", justifyContent: "center" }}>
                   <Ionicons name="checkmark" size={21} color={semanticColors.onPrimary} />
                 </View>
               ) : null}

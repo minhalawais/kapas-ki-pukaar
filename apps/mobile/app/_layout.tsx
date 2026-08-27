@@ -12,22 +12,22 @@ import {
   NotoNaskhArabic_700Bold,
 } from "@expo-google-fonts/noto-naskh-arabic";
 import { NotoNastaliqUrdu_600SemiBold } from "@expo-google-fonts/noto-nastaliq-urdu";
-import { getDirection } from "@kapas/localization";
 import { configureMockRuntime } from "@kapas/mock-services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import { ActivityIndicator, AppState, I18nManager, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, AppState, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { configureNativeLayoutDirection } from "../src/i18n/native-layout-direction";
 import { AppErrorBoundary } from "../src/providers/error-boundary";
 import { QueryProvider } from "../src/providers/query-provider";
+import { imagePreloadService } from "../src/services/imagePreloadService";
 import { promptAudioService } from "../src/services/promptAudioService";
 import { useConnectivityStore } from "../src/stores/connectivityStore";
 import { useLocaleStore } from "../src/stores/locale-store";
-import { useVoiceGuidanceStore } from "../src/stores/voiceGuidanceStore";
 import { semanticColors } from "../src/theme/tokens";
 
 configureMockRuntime({
@@ -38,7 +38,10 @@ configureMockRuntime({
   },
 });
 
+configureNativeLayoutDirection();
+
 export default function RootLayout() {
+  const [criticalImagesReady, setCriticalImagesReady] = useState(false);
   const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -51,19 +54,29 @@ export default function RootLayout() {
     NotoNastaliqUrdu_600SemiBold,
     ...Ionicons.font,
   });
-  const locale = useLocaleStore((s) => s.locale);
   const hydrated = useLocaleStore((s) => s.hydrated);
   const hydrate = useLocaleStore((s) => s.hydrate);
   const connectivityHydrated = useConnectivityStore((s) => s.hydrated);
   const hydrateConnectivity = useConnectivityStore((s) => s.hydrate);
-  const voiceHydrated = useVoiceGuidanceStore((s) => s.hydrated);
-  const hydrateVoiceGuidance = useVoiceGuidanceStore((s) => s.hydrate);
 
   useEffect(() => {
     void hydrate();
     void hydrateConnectivity();
-    void hydrateVoiceGuidance();
-  }, [hydrate, hydrateConnectivity, hydrateVoiceGuidance]);
+  }, [hydrate, hydrateConnectivity]);
+
+  useEffect(() => {
+    let mounted = true;
+    void imagePreloadService.preloadCritical().finally(() => {
+      if (!mounted) {
+        return;
+      }
+      setCriticalImagesReady(true);
+      imagePreloadService.warmNonCritical();
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (state) => {
@@ -72,15 +85,7 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  useEffect(() => {
-    const rtl = getDirection(locale) === "rtl";
-    if (I18nManager.isRTL !== rtl) {
-      I18nManager.allowRTL(rtl);
-      I18nManager.forceRTL(rtl);
-    }
-  }, [locale]);
-
-  if (!hydrated || !connectivityHydrated || !voiceHydrated || (!fontsLoaded && !fontError)) {
+  if (!hydrated || !connectivityHydrated || !criticalImagesReady || (!fontsLoaded && !fontError)) {
     return (
       <View
         style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: semanticColors.pageWorker }}

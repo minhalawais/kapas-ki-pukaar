@@ -294,8 +294,16 @@ describe("mock services", () => {
     expect(punjab.every((row) => row.province === "Punjab")).toBe(true);
   });
 
-  it("keeps worker list empty until a local or injected case exists", async () => {
-    await expect(complaintService.listMine()).resolves.toEqual([]);
+  it("seeds realistic mobile demo complaints for the worker view", async () => {
+    const rows = await complaintService.listMine();
+    expect(rows.map((row) => row.trackingId)).toEqual([
+      "KP-26-000102",
+      "KP-26-000101",
+      "KP-26-000106",
+      "KP-26-000110",
+    ]);
+    expect(rows.some((row) => row.status === "Action in Progress")).toBe(true);
+    expect(rows.some((row) => row.priority === "Emergency")).toBe(true);
   });
 
   it("submits a draft with a unique tracking id and keeps original audio", async () => {

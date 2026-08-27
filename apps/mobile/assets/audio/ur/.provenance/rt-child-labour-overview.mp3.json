@@ -6,14 +6,14 @@
   "scriptUrdu": "بچوں کی مزدوری اور تعلیم۔ کام سے بچے کو خطرہ، جبری مزدوری یا تعلیم کا نقصان نہیں ہونا چاہیے۔",
   "scriptSha256": "9f2085067d0e6694d073804ef5245a3d504b87a72a8abf311b8297224f7c670e",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "2d786a7c2e7d4c71d4ec3f399fcf8ed68b456fac9e9da70c473953b2c8b65f49",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "4d569be7e186ef94196e571ee37ffd5ce7a26e45a9b36bfde166fb48a4c1d5d7",
   "generatedAt": "2026-08-23T09:36:23.100Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 9.957,
     "integratedLufs": -18.23,
     "truePeakDb": -2.5
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:27.687Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

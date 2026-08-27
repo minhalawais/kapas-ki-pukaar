@@ -2,6 +2,7 @@ import { t } from "@kapas/localization";
 import { rightsContentService } from "@kapas/mock-services";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 import { ScreenNotice } from "../../src/components/screen-notice";
@@ -10,6 +11,7 @@ import { RightsExplorerHeader } from "../../src/features/rights/RightsExplorerHe
 import { RightsTopicCard } from "../../src/features/rights/RightsTopicCard";
 import { SafeReportingPanel } from "../../src/features/rights/SafeReportingPanel";
 import { isRTL } from "../../src/i18n/rtl";
+import { imagePreloadService } from "../../src/services/imagePreloadService";
 import { useLocaleStore } from "../../src/stores/localeStore";
 import { fontFamily, semanticColors } from "../../src/theme/tokens";
 
@@ -21,6 +23,10 @@ export default function RightsScreen() {
   const core = query.data?.filter((topic) => topic.tier === "core") ?? [];
   const more = query.data?.filter((topic) => topic.tier === "more") ?? [];
   const openTopic = (id: string) => router.push(`/rights/${id}`);
+
+  useEffect(() => {
+    void imagePreloadService.preloadRights();
+  }, []);
 
   return (
     <ScreenShell scroll contentStyle={{ paddingHorizontal: 0, paddingTop: 8, paddingBottom: 24, gap: 0 }}>

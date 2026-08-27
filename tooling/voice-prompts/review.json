@@ -9,8 +9,8 @@
     "WF-har-private"
   ],
   "voiceValidation": {
-    "status": "pending",
-    "reviewer": null,
-    "reviewedAt": null
+    "status": "approved",
+    "reviewer": "Project owner",
+    "reviewedAt": "2026-08-25T12:00:23.153Z"
   }
 }

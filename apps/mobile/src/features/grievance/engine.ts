@@ -46,6 +46,22 @@ export function resolveNext(node: QuestionNode, answers: AnswerMap): string | nu
   if (node.next.type === "node") {
     return node.next.id;
   }
+  if (node.next.type === "conditional") {
+    for (const item of node.next.cases) {
+      const matches = Object.entries(item.when).every(([answerId, expected]) => {
+        const actual = answers[answerId];
+        const expectedValues = Array.isArray(expected) ? expected : [expected];
+        if (Array.isArray(actual)) {
+          return actual.some((value) => expectedValues.includes(value));
+        }
+        return typeof actual === "string" && expectedValues.includes(actual);
+      });
+      if (matches) {
+        return item.id;
+      }
+    }
+    return node.next.fallback;
+  }
   const sourceId = node.next.by ?? node.id;
   const raw = asString(answers[sourceId]) ?? "";
   return node.next.cases[raw] ?? node.next.fallback;

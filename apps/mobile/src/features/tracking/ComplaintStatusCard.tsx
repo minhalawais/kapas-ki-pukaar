@@ -32,7 +32,8 @@ export function ComplaintStatusCard({ complaint, onPress }: Props) {
   const locationIsLtr = /[A-Za-z]/.test(location);
   const updatedLabel = `${t(locale, "complaints.updated")} · ${formatComplaintDate(latestComplaintDate(complaint), locale)}`;
   const tone = complaintStatusTone(complaint);
-  const accentColor = tone === "critical"
+  const isDanger = complaint.incident?.currentDanger;
+  const accentColor = isDanger
     ? semanticColors.critical
     : tone === "success"
       ? semanticColors.success
@@ -46,37 +47,42 @@ export function ComplaintStatusCard({ complaint, onPress }: Props) {
       accessibilityRole="button"
       accessibilityLabel={`${t(locale, `category.${complaint.categoryCode}` as MessageKey)}, ${t(locale, complaintWorkerStatusKey(complaint) as MessageKey)}, ${complaint.trackingId}`}
       style={({ pressed }) => ({
-        backgroundColor: "#FFFEFA",
+        backgroundColor: "#FFFFFF",
         borderWidth: 1,
-        borderColor: tone === "critical" ? "#F0C9C9" : semanticColors.borderEssential,
+        borderColor: isDanger ? "#FCA5A5" : semanticColors.borderEssential,
         borderRadius: radiusUsage.mobileCard,
-        padding: 12,
-        gap: 10,
-        shadowColor: "#0A2F1E",
-        shadowOpacity: 0.08,
-        shadowRadius: 10,
-        shadowOffset: { width: 0, height: 5 },
+        padding: 14,
+        gap: 12,
+        shadowColor: "#1E2923",
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 2 },
         elevation: 2,
         opacity: pressed ? 0.85 : 1,
       })}
     >
-      <View style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "flex-start", gap: 10 }}>
-        <View style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: tone === "critical" ? semanticColors.criticalSurface : semanticColors.progressSurface, alignItems: "center", justifyContent: "center" }}>
-          <Ionicons name="document-text-outline" size={22} color={tone === "critical" ? semanticColors.critical : semanticColors.warningText} />
-        </View>
-        <View style={{ flex: 1, gap: 2, alignItems: isRTL(locale) ? "flex-end" : "flex-start" }}>
-          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.88} style={{ color: semanticColors.textPrimary, fontSize: mobileType.body.size, lineHeight: isRTL(locale) ? 29 : mobileType.body.line, fontFamily: strongFamily, textAlign: align, writingDirection: isRTL(locale) ? "rtl" : "ltr" }}>{t(locale, `category.${complaint.categoryCode}` as MessageKey)}</Text>
-          <Text style={{ color: semanticColors.textSecondary, fontSize: mobileType.caption.size, lineHeight: mobileType.caption.line, fontFamily: fontFamily.uiMedium, textAlign: align, writingDirection: "ltr" }}>{isolateComplaintId(complaint.trackingId)}</Text>
-          <View style={{ marginTop: 5 }}>
-            <StatusPill label={complaint.overdue ? t(locale, "complaints.overdue") : t(locale, complaintWorkerStatusKey(complaint) as MessageKey)} tone={tone} />
+      <View style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <View style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "center", gap: 10, flex: 1 }}>
+          <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: isDanger ? "#FEE2E2" : "#EBF5F0", alignItems: "center", justifyContent: "center" }}>
+            <Ionicons name="document-text" size={22} color={isDanger ? semanticColors.critical : "#0E6847"} />
+          </View>
+          <View style={{ flex: 1, gap: 2, alignItems: isRTL(locale) ? "flex-end" : "flex-start" }}>
+            <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.88} style={{ color: semanticColors.textPrimary, fontSize: 17, lineHeight: isRTL(locale) ? 29 : 24, fontFamily: strongFamily, textAlign: align, writingDirection: isRTL(locale) ? "rtl" : "ltr" }}>{t(locale, `category.${complaint.categoryCode}` as MessageKey)}</Text>
+            <View style={{ backgroundColor: "#F1F5F9", paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, alignSelf: isRTL(locale) ? "flex-end" : "flex-start" }}>
+              <Text style={{ color: semanticColors.textSecondary, fontSize: 12, lineHeight: 16, fontFamily: fontFamily.uiSemibold, writingDirection: "ltr" }}>{isolateComplaintId(complaint.trackingId)}</Text>
+            </View>
           </View>
         </View>
-        <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: semanticColors.surfaceMuted, alignItems: "center", justifyContent: "center" }}>
-          <Ionicons name={isRTL(locale) ? "chevron-back" : "chevron-forward"} size={18} color={semanticColors.textSecondary} />
+        <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: "#F3EFE0", borderWidth: 1, borderColor: "#E5E0D0", alignItems: "center", justifyContent: "center" }}>
+          <Ionicons name={isRTL(locale) ? "chevron-back" : "chevron-forward"} size={18} color="#1E2923" />
         </View>
       </View>
 
-      <View style={{ backgroundColor: "#F7FAF6", borderRadius: 8, borderWidth: 1, borderColor: semanticColors.border, paddingHorizontal: 8, paddingTop: 10, paddingBottom: 2 }}>
+      <View style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "center" }}>
+        <StatusPill label={complaint.overdue ? t(locale, "complaints.overdue") : t(locale, complaintWorkerStatusKey(complaint) as MessageKey)} tone={tone} />
+      </View>
+
+      <View style={{ backgroundColor: "#F8FAFC", borderRadius: 10, borderWidth: 1, borderColor: "#E2E8F0", paddingHorizontal: 8, paddingTop: 10, paddingBottom: 4 }}>
         <CaseProgressStrip current={complaintProgress(complaint.status)} />
       </View>
 

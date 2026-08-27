@@ -7,6 +7,7 @@ import { ActivityIndicator, Pressable, Text, type GestureResponderEvent } from "
 import { isRTL } from "../i18n/rtl";
 import { useLocaleStore } from "../stores/localeStore";
 import { controlSize, fontFamily, mobileType, radiusUsage, semanticColors } from "../theme/tokens";
+import { localizedTextMetrics } from "../theme/urdu-text";
 
 interface Props {
   labelKey: MessageKey;
@@ -41,7 +42,9 @@ export function PrimaryCta({
   const color =
     tone === "secondary" ? semanticColors.textPrimary : semanticColors.onPrimary;
   const borderWidth = tone === "secondary" ? 1.5 : 0;
-  const family = isRTL(locale) ? fontFamily.urduSemibold : fontFamily.uiSemibold;
+  const rtl = isRTL(locale);
+  const family = rtl ? fontFamily.urduSemibold : fontFamily.uiSemibold;
+  const labelMetrics = localizedTextMetrics(locale, mobileType.button.size, mobileType.button.line);
 
   return (
     <Pressable
@@ -65,7 +68,7 @@ export function PrimaryCta({
         paddingHorizontal: 16,
         paddingVertical: 12,
         opacity: isDisabled ? 0.4 : pressed ? 0.85 : 1,
-        flexDirection: isRTL(locale) ? "row-reverse" : "row",
+        flexDirection: rtl ? "row-reverse" : "row",
         gap: 8,
       })}
     >
@@ -74,10 +77,9 @@ export function PrimaryCta({
       <Text
         style={{
           color,
-          fontSize: mobileType.button.size,
-          lineHeight: mobileType.button.line,
           fontFamily: family,
           textAlign: "center",
+          ...labelMetrics,
         }}
       >
         {label}

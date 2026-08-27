@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 EXPECTED: dict[str, tuple[tuple[int, int], bool]] = {
     "assets/brand/logo-mark.png": ((1024, 1024), True),
+    "assets/brand/logo-mark-inline.png": ((632, 497), True),
     "assets/brand/logo-mark-512.png": ((512, 512), True),
     "assets/brand/logo-mark-256.png": ((256, 256), True),
     "assets/brand/logo-mark-160.png": ((160, 160), True),
@@ -32,6 +33,7 @@ EXPECTED: dict[str, tuple[tuple[int, int], bool]] = {
 
 COPIES: dict[str, str] = {
     "apps/mobile/assets/logo-mark.png": "assets/brand/logo-mark.png",
+    "apps/mobile/assets/logo-mark-inline.png": "assets/brand/logo-mark-inline.png",
     "apps/mobile/assets/icon.png": "assets/brand/icon-1024.png",
     "apps/mobile/assets/adaptive-icon.png": "assets/brand/adaptive-foreground.png",
     "apps/mobile/assets/monochrome-icon.png": "assets/brand/monochrome-foreground.png",
@@ -47,7 +49,11 @@ COPIES: dict[str, str] = {
     "apps/puwf-portal/src/app/opengraph-image.png": "assets/brand/social-card-1200x630.png",
     "apps/puwf-portal/src/app/twitter-image.png": "assets/brand/social-card-1200x630.png",
     "apps/puwf-portal/public/favicon.png": "assets/brand/favicon-32.png",
+    "apps/puwf-portal/public/favicon-16x16.png": "assets/brand/favicon-16.png",
+    "apps/puwf-portal/public/favicon-32x32.png": "assets/brand/favicon-32.png",
     "apps/puwf-portal/public/favicon.ico": "assets/brand/favicon.ico",
+    "apps/puwf-portal/public/android-chrome-192x192.png": "assets/brand/icon-192.png",
+    "apps/puwf-portal/public/android-chrome-512x512.png": "assets/brand/icon-512.png",
 }
 
 

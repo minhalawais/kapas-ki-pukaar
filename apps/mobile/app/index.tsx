@@ -4,20 +4,17 @@ import { useEffect, useRef } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { IloEndorsement } from "../src/components/ilo-endorsement";
 import { KapasMark } from "../src/components/kapas-mark";
+import { PartnerLogoStrip } from "../src/components/partner-logo-strip";
 import { useReducedMotion } from "../src/hooks/use-reduced-motion";
 import { isRTL } from "../src/i18n/rtl";
 import { useLocaleStore } from "../src/stores/localeStore";
 import { fontFamily, motion, semanticColors } from "../src/theme/tokens";
 import { urduSafeText } from "../src/theme/urdu-text";
 
-function nextRoute(hasChosenLanguage: boolean, welcomeCompleted: boolean): "/language" | "/welcome" | "/home" {
+function nextRoute(hasChosenLanguage: boolean): "/language" | "/home" {
   if (!hasChosenLanguage) {
     return "/language";
-  }
-  if (!welcomeCompleted) {
-    return "/welcome";
   }
   return "/home";
 }
@@ -26,7 +23,6 @@ export default function SplashScreen() {
   const router = useRouter();
   const locale = useLocaleStore((s) => s.locale);
   const hasChosenLanguage = useLocaleStore((s) => s.hasChosenLanguage);
-  const welcomeCompleted = useLocaleStore((s) => s.welcomeCompleted);
   const reducedMotion = useReducedMotion();
   const rtl = isRTL(locale);
   const family = rtl ? fontFamily.urduHeading : fontFamily.uiBold;
@@ -40,18 +36,18 @@ export default function SplashScreen() {
         return;
       }
       routed.current = true;
-      router.replace(nextRoute(hasChosenLanguage, welcomeCompleted));
+      router.replace(nextRoute(hasChosenLanguage));
     }, delay);
     return () => clearTimeout(timer);
-  }, [hasChosenLanguage, reducedMotion, router, welcomeCompleted]);
+  }, [hasChosenLanguage, reducedMotion, router]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: semanticColors.pageWorker }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: semanticColors.pageWorker, direction: "ltr" }}>
       <View
         accessible
         accessibilityRole="image"
         accessibilityLabel={t(locale, "splash.accessibilityLabel")}
-        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 20 }}
+        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 20, direction: "ltr" }}
       >
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 14 }}>
           <KapasMark size={108} />
@@ -95,7 +91,9 @@ export default function SplashScreen() {
             borderTopColor: semanticColors.border,
           }}
         >
-          <IloEndorsement />
+          <View style={{ width: "100%", maxWidth: 360 }}>
+            <PartnerLogoStrip compact />
+          </View>
         </View>
       </View>
     </SafeAreaView>

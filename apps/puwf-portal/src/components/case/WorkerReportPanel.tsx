@@ -45,8 +45,6 @@ export function WorkerReportPanel({ complaint }: { complaint: Complaint }) {
   const identity = identityLabel(complaint);
   const rows = structuredAnswerRows(complaint);
   const affected = complaint.affectedRange ?? complaint.incident.othersAffected;
-  const sourceStatement = complaint.incident.description ?? (locale === "ur" ? complaint.ai?.transcriptUr : complaint.ai?.transcriptEn);
-  const sourceIsLtr = Boolean(sourceStatement && /[A-Za-z]/.test(sourceStatement));
   const cnic = identity.last4 ? `••••-•••••••-${identity.last4}` : t(locale, "portal.case.identity.notStored");
   const contactValue = complaint.incident.structuredAnswers.contact;
   const contactOption = typeof contactValue === "string" ? getWorkflowNode("contact")?.options?.find((option) => option.value === contactValue) : null;
@@ -80,7 +78,6 @@ export function WorkerReportPanel({ complaint }: { complaint: Complaint }) {
       </dl>
     </div>
     <dl className="grid grid-cols-1 border-t border-border bg-page px-4 py-2 sm:grid-cols-3 sm:divide-x sm:divide-border rtl:sm:divide-x-reverse"><div className="py-2 sm:px-3"><dt className="text-[11px] text-muted">{t(locale, "portal.case.reporterType")}</dt><dd className="mt-0.5 text-sm font-medium text-ink">{t(locale, `portal.reporter.${complaint.reporterType}` as MessageKey)}</dd></div><div className="py-2 sm:px-3"><dt className="text-[11px] text-muted">{t(locale, "portal.case.workerType")}</dt><dd className="mt-0.5 text-sm font-medium text-ink">{complaint.affectedWorkerType ? t(locale, `portal.employment.${complaint.affectedWorkerType}` as MessageKey) : t(locale, "portal.case.notAvailable")}</dd></div><div className="py-2 sm:px-3"><dt className="text-[11px] text-muted">{t(locale, "portal.filters.gender")}</dt><dd className="mt-0.5 text-sm font-medium text-ink">{t(locale, `portal.gender.${gender}` as MessageKey)}</dd></div></dl>
-    <div className="border-t border-border px-4 py-4"><p className="text-[11px] font-semibold uppercase text-muted">{t(locale, "portal.case.workerStatement")}</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink" dir={sourceIsLtr ? "ltr" : undefined}>{sourceStatement ?? t(locale, "portal.case.noStatement")}</p></div>
     {rows.length > 0 ? <div className="border-t border-border px-4 py-4"><h3 className="text-sm font-semibold text-ink">{t(locale, "portal.case.structuredDetails")}</h3><dl className="mt-2 divide-y divide-border">{rows.map((row) => <div key={row.id} className="grid gap-1 py-2.5 sm:grid-cols-[minmax(180px,0.8fr)_minmax(0,1.2fr)] sm:gap-4"><dt className="text-xs text-muted">{t(locale, row.promptKey)}</dt><dd className="text-sm font-medium text-ink">{[...row.answerKeys.map((key) => t(locale, key)), ...row.rawValues].join("، ")}</dd></div>)}</dl></div> : null}
   </Card>;
 }

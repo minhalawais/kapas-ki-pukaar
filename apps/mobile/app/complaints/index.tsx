@@ -38,7 +38,15 @@ export default function ComplaintsScreen() {
     attention: complaints.filter(complaintNeedsAttention).length,
     complete: complaints.filter(isComplaintComplete).length,
   }), [complaints]);
-  const visibleComplaints = useMemo(() => filterComplaints(complaints, filter), [complaints, filter]);
+  const visibleComplaints = useMemo(() => {
+    const list = filterComplaints(complaints, filter);
+    return [...list].sort((a, b) => {
+      const aAttention = complaintNeedsAttention(a) ? 1 : 0;
+      const bAttention = complaintNeedsAttention(b) ? 1 : 0;
+      if (aAttention !== bAttention) return bAttention - aAttention;
+      return b.submittedAt.localeCompare(a.submittedAt);
+    });
+  }, [complaints, filter]);
   const filters: { id: ComplaintFilter; label: string }[] = [
     { id: "all", label: t(locale, "complaints.filter.all") },
     { id: "attention", label: t(locale, "complaints.filter.attention") },
@@ -119,9 +127,15 @@ export default function ComplaintsScreen() {
             })}
           </View>
 
-          <View style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Text style={{ color: semanticColors.textPrimary, fontSize: mobileType.answer.size, lineHeight: mobileType.answer.line, fontFamily: headingFamily, textAlign: rtl ? "right" : "left" }}>{t(locale, "complaints.yourCases")}</Text>
-            <Text style={{ color: semanticColors.textSecondary, fontSize: mobileType.caption.size, lineHeight: mobileType.caption.line, fontFamily: strongFamily }}>{visibleComplaints.length}</Text>
+          <View style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", gap: 8, marginTop: 4, marginBottom: 2 }}>
+            <Text style={{ color: semanticColors.textPrimary, fontSize: mobileType.answer.size, lineHeight: mobileType.answer.line, fontFamily: headingFamily, textAlign: rtl ? "right" : "left" }}>
+              {t(locale, "complaints.yourCases")}
+            </Text>
+            <View style={{ backgroundColor: "#EBF5F0", paddingHorizontal: 10, paddingVertical: 2, borderRadius: 12 }}>
+              <Text style={{ color: "#0E6847", fontSize: 13, fontFamily: fontFamily.uiBold }}>
+                {visibleComplaints.length}
+              </Text>
+            </View>
           </View>
         </>
       ) : null}

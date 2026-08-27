@@ -83,12 +83,35 @@ export function applyAnswer(
     next = { ...next, incident: { ...next.incident, whenLabel: value } };
   }
   if (node.id === "others" && value === "no") {
-    next = { ...next, incident: { ...next.incident, othersAffected: "individual" } };
+    next = {
+      ...next,
+      incident: {
+        ...next.incident,
+        othersAffected: "individual",
+        immediateDanger: next.incident.immediateDanger ?? false,
+        currentDanger: next.incident.currentDanger ?? false,
+      },
+    };
   }
   if (node.storeAs === "othersAffected" && typeof value === "string") {
-    next = { ...next, incident: { ...next.incident, othersAffected: value as GroupImpact } };
+    next = {
+      ...next,
+      incident: {
+        ...next.incident,
+        othersAffected: value as GroupImpact,
+        immediateDanger: next.incident.immediateDanger ?? false,
+        currentDanger: next.incident.currentDanger ?? false,
+      },
+    };
   }
   if (node.storeAs === "immediateDanger" && typeof value === "string") {
+    const danger = value === "yes";
+    next = {
+      ...next,
+      incident: { ...next.incident, immediateDanger: danger, currentDanger: danger },
+    };
+  }
+  if ((node.id === "har-present" || node.id === "chl-risk") && typeof value === "string") {
     const danger = value === "yes";
     next = {
       ...next,

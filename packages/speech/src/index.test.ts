@@ -8,7 +8,7 @@ describe("speech package", () => {
     expect(PROMPT_FILES["WF-voice"]).toBe("wf-voice.mp3");
     expect(WORKFLOW_PROMPT_IDS["wag-what"]).toBe("WF-wag-what");
     expect(rightsPromptIds("wages")).toHaveLength(4);
-    expect(Object.keys(PROMPT_FILES)).toHaveLength(109);
+    expect(Object.keys(PROMPT_FILES)).toHaveLength(111);
   });
 
   it("covers every complaint workflow node with an Urdu prompt", () => {

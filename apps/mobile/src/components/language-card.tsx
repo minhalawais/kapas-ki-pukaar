@@ -4,6 +4,7 @@ import { Pressable, Text } from "react-native";
 import { isRTL } from "../i18n/rtl";
 import { useLocaleStore } from "../stores/localeStore";
 import { controlSize, fontFamily, mobileType, radiusUsage, semanticColors } from "../theme/tokens";
+import { localizedTextMetrics } from "../theme/urdu-text";
 
 interface Props {
   localeValue: "ur" | "en";
@@ -16,7 +17,10 @@ export function LanguageCard({ localeValue, selected, onPress }: Props) {
   const labelKey = localeValue === "ur" ? "locale.urdu" : "locale.english";
   const a11yKey = localeValue === "ur" ? "a11y.languageUrdu" : "a11y.languageEnglish";
   const label = t(locale, labelKey);
-  const family = localeValue === "ur" ? fontFamily.urduUi : fontFamily.ui;
+  const rtl = isRTL(locale);
+  const family = rtl ? fontFamily.urduUi : fontFamily.ui;
+  const labelMetrics = localizedTextMetrics(locale, mobileType.answer.size, mobileType.answer.line, "heading");
+  const selectedMetrics = localizedTextMetrics(locale, mobileType.caption.size, mobileType.caption.line);
 
   return (
     <Pressable
@@ -38,11 +42,10 @@ export function LanguageCard({ localeValue, selected, onPress }: Props) {
       <Text
         style={{
           color: semanticColors.textPrimary,
-          fontSize: mobileType.answer.size,
-          lineHeight: mobileType.answer.line,
           fontWeight: "600",
           fontFamily: family,
-          textAlign: isRTL(locale) ? "right" : "left",
+          textAlign: rtl ? "right" : "left",
+          ...labelMetrics,
         }}
       >
         {label}
@@ -52,9 +55,9 @@ export function LanguageCard({ localeValue, selected, onPress }: Props) {
           style={{
             marginTop: 8,
             color: semanticColors.actionPrimary,
-            fontSize: mobileType.caption.size,
-            lineHeight: mobileType.caption.line,
-            fontFamily: isRTL(locale) ? fontFamily.urduUi : fontFamily.ui,
+            fontFamily: rtl ? fontFamily.urduUi : fontFamily.ui,
+            textAlign: rtl ? "right" : "left",
+            ...selectedMetrics,
           }}
         >
           {t(locale, "a11y.selected")}

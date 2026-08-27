@@ -33,5 +33,6 @@ test-results/
 
 # Local working artifacts
 .artifacts/
+build-artifacts/
 tmp/
 *.tmp.mp3

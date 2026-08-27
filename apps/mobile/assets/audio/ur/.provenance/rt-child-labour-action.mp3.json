@@ -6,14 +6,14 @@
   "scriptUrdu": "اب آپ کیا کر سکتے ہیں۔ بچے کو فوری کیمیائی، مشین یا تشدد کے خطرے سے دور کریں اور ضرورت پر علاج لیں۔ شناخت سے خطرہ بڑھے تو بچے کا نام دیے بغیر رپورٹ کریں۔",
   "scriptSha256": "a6cee424e055ede6f61c8df73e4ee63afa0e70702fcf1ef68a85a0db049a339d",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "70e646e08aa3afaf9a02438d75f8b20ea20a814704a9b5a28e6536a62ea87869",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "3c5790d148671be7b97208dae24ec3e6143799dd151a6297a7c9c35b95af7fb0",
   "generatedAt": "2026-08-23T09:38:04.918Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 14.573,
     "integratedLufs": -17.92,
     "truePeakDb": -3.31
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:30.368Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

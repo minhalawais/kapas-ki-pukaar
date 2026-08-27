@@ -1,44 +1,34 @@
 import { Ionicons } from "@expo/vector-icons";
 import type { RightsTopic } from "@kapas/domain";
-import { t, type MessageKey } from "@kapas/localization";
+import { t } from "@kapas/localization";
 import { SCREEN_PROMPT_IDS } from "@kapas/speech";
-import * as Haptics from "expo-haptics";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ImageBackground, Pressable, Text, View } from "react-native";
 
 import HEADER_IMAGE from "../../../assets/rights/rights-explorer-header.png";
+import { useAutoPromptId } from "../../hooks/use-prompt-playback";
 import { isRTL } from "../../i18n/rtl";
 import { promptAudioService } from "../../services/promptAudioService";
 import { useLocaleStore } from "../../stores/localeStore";
 import { fontFamily, semanticColors } from "../../theme/tokens";
 
-import { rightsIcon, rightsPalette } from "./rightsVisuals";
-
-const hotspotPositions = [
-  { top: 82, left: "34%" },
-  { top: 112, left: "52%" },
-  { top: 78, right: 16 },
-  { bottom: 14, left: "37%" },
-  { bottom: 14, right: 80 },
-  { bottom: 14, right: 16 },
-] as const;
-
-export function RightsExplorerHeader({ topics, loading, onBack, onOpen }: { topics: RightsTopic[]; loading: boolean; onBack: () => void; onOpen: (topic: RightsTopic) => void }) {
+export function RightsExplorerHeader({ loading, onBack }: { topics: RightsTopic[]; loading: boolean; onBack: () => void; onOpen: (topic: RightsTopic) => void }) {
   const locale = useLocaleStore((state) => state.locale);
   const rtl = isRTL(locale);
-  const [speaking, setSpeaking] = useState(false);
-  const visibleTopics = topics.slice(0, hotspotPositions.length);
+  const [manualSpeaking, setManualSpeaking] = useState(false);
+  const autoPlayback = useAutoPromptId(SCREEN_PROMPT_IDS.rights);
+  const speaking = manualSpeaking || autoPlayback.state === "loading" || autoPlayback.state === "playing";
 
   useEffect(() => () => { void promptAudioService.stop(); }, []);
 
   const toggleSpeech = () => {
     if (speaking) {
-      void promptAudioService.stop().finally(() => setSpeaking(false));
+      void promptAudioService.stop().finally(() => setManualSpeaking(false));
       return;
     }
     if (locale !== "ur") return;
-    setSpeaking(true);
-    void promptAudioService.playPrompt(SCREEN_PROMPT_IDS.rights).finally(() => setSpeaking(false));
+    setManualSpeaking(true);
+    void promptAudioService.playPrompt(SCREEN_PROMPT_IDS.rights).finally(() => setManualSpeaking(false));
   };
 
   return (
@@ -68,37 +58,6 @@ export function RightsExplorerHeader({ topics, loading, onBack, onOpen }: { topi
           </Pressable>
         </View>
 
-        {visibleTopics.map((topic, index) => {
-          const palette = rightsPalette(topic.tone);
-          return (
-            <Pressable
-              key={topic.id}
-              onPress={() => {
-                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onOpen(topic);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={t(locale, topic.titleKey as MessageKey)}
-              style={({ pressed }) => ({
-                position: "absolute",
-                ...hotspotPositions[index],
-                width: 42,
-                height: 42,
-                borderRadius: 21,
-                borderWidth: 3,
-                borderColor: semanticColors.surface,
-                backgroundColor: palette.foreground,
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: pressed ? 0.78 : 1,
-                transform: [{ scale: pressed ? 0.94 : 1 }],
-                elevation: 3,
-              })}
-            >
-              <Ionicons name={rightsIcon[topic.visual]} size={21} color={semanticColors.onPrimary} />
-            </Pressable>
-          );
-        })}
       </ImageBackground>
     </View>
   );

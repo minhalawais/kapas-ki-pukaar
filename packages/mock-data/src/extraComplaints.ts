@@ -6,29 +6,44 @@ import { createRng } from "./rng";
 
 export function extraDemoComplaints(count: number, startIndex: number): Complaint[] {
   const rng = createRng(20260819 + startIndex);
+  const categories = ["WAG", "PES", "HSE", "HAR", "CHL", "FOL", "CON", "HRS"] as const;
+  const statuses = ["Submitted", "Under Review", "Action in Progress", "Proposed Resolution", "Resolved", "Closed"] as const;
+
   return Array.from({ length: count }, (_, offset) => {
     const location = rng.pick(DEMO_LOCATIONS);
+    const category = rng.pick(categories);
+    const status = rng.pick(statuses);
+    const priority = rng.pick(["Standard", "High", "Urgent"] as const);
     const dailyRate = rng.pick([950, 1000, 1100, 1200]);
-    const days = rng.pick([6, 8, 10, 12]);
+    const days = rng.pick([4, 6, 8, 10, 12]);
+
+    // Spread submittedAt dates realistically across 30 days up to 2026-08-28
+    const dayOffset = Math.floor((offset * 29) / count);
+    const hour = 8 + (offset % 10);
+    const minute = (offset * 17) % 60;
+    const dateObj = new Date(Date.UTC(2026, 7, 28 - dayOffset, hour, minute));
+    const dateIso = dateObj.toISOString();
+
     return buildComplaint({
       index: startIndex + offset,
-      categoryCode: "WAG",
-      subcategoryCode: "WAG-DEL",
-      status: "Submitted",
-      priority: "Standard",
-      privacyMode: "CONF",
+      categoryCode: category,
+      subcategoryCode: `${category}-GEN`,
+      status,
+      priority,
+      privacyMode: rng.pick(["CONF", "ANON", "OPEN"] as const),
       reporterType: "self",
       gender: rng.pick(["Female", "Male"] as const),
       affectedWorkerType: "seasonal-picker",
-      affectedRange: "individual",
+      affectedRange: rng.pick(["individual", "2-5", "6-20"] as const),
       location: { ...location, exactCoordinates: null },
-      createdAt: "2026-08-18T08:00:00.000Z",
-      currentDanger: false,
-      description: `The cotton picking wage was agreed at PKR ${dailyRate} per day, but payment has been delayed for ${days} days after the work was completed near ${location.villageLabel}.`,
-      descriptionUr: `${location.villageLabel} کے قریب کپاس چننے کی روزانہ اجرت ${dailyRate} روپے طے ہوئی تھی، مگر کام مکمل ہونے کے بعد ${days} دن سے ادائیگی نہیں ہوئی۔`,
-      whenLabel: "This week",
-      confidenceScore: 0.8,
-      displayName: rng.pick(["Amina", "Razia", "Shazia", "Aslam", "Yousaf"] as const),
+      createdAt: dateIso,
+      submittedAt: dateIso,
+      currentDanger: priority === "Urgent",
+      description: `Cotton sector grievance regarding ${category} near ${location.villageLabel}, ${location.district}. Daily wage rate: PKR ${dailyRate}.`,
+      descriptionUr: `${location.villageLabel}، ${location.district} میں کپاس کے کام سے متعلق شکایت درج کروائی گئی۔`,
+      whenLabel: "This month",
+      confidenceScore: 0.88,
+      displayName: rng.pick(["Amina", "Razia", "Shazia", "Aslam", "Yousaf", "Fatima", "Tariq", "Zainab", "Bilal", "Maryam"] as const),
     });
   });
 }

@@ -7,19 +7,25 @@ import { KapasMark } from "../src/components/kapas-mark";
 import { LanguageCard } from "../src/components/language-card";
 import { PrimaryCta } from "../src/components/primary-cta";
 import { ScreenShell } from "../src/components/screen-shell";
+import { useAutoPromptId } from "../src/hooks/use-prompt-playback";
 import { isRTL } from "../src/i18n/rtl";
 import { useLocaleStore } from "../src/stores/localeStore";
 import { fontFamily, mobileType, semanticColors } from "../src/theme/tokens";
+import { localizedTextMetrics, urduBrandText } from "../src/theme/urdu-text";
 
 export default function LanguageScreen() {
   const router = useRouter();
   const locale = useLocaleStore((s) => s.locale);
   const setLocale = useLocaleStore((s) => s.setLocale);
   const hasChosenLanguage = useLocaleStore((s) => s.hasChosenLanguage);
-  const welcomeCompleted = useLocaleStore((s) => s.welcomeCompleted);
-  const headingFamily = isRTL(locale) ? fontFamily.urduHeading : fontFamily.uiBold;
-  const bodyFamily = isRTL(locale) ? fontFamily.urduUi : fontFamily.ui;
-  const align = isRTL(locale) ? "right" : "left";
+  const rtl = isRTL(locale);
+  const headingFamily = rtl ? fontFamily.urduHeading : fontFamily.uiBold;
+  const bodyFamily = rtl ? fontFamily.urduUi : fontFamily.ui;
+  const align = rtl ? "right" : "left";
+  const logoMetrics = locale === "ur" ? urduBrandText(mobileType.answer.size) : localizedTextMetrics(locale, mobileType.answer.size, mobileType.answer.line, "heading");
+  const headingMetrics = localizedTextMetrics(locale, mobileType.question.size, mobileType.question.line, "heading");
+  const bodyMetrics = localizedTextMetrics(locale, mobileType.body.size, mobileType.body.line);
+  useAutoPromptId("SC-welcome");
 
   return (
     <ScreenShell
@@ -29,29 +35,28 @@ export default function LanguageScreen() {
             labelKey="common.continue"
             icon="arrow-forward-circle"
             disabled={!hasChosenLanguage}
-            onPress={() => router.replace(welcomeCompleted ? "/home" : "/welcome")}
+            onPress={() => router.replace("/home")}
           />
         </ActionDock>
       }
     >
-      <View style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "center", gap: 10 }}>
+      <View style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", gap: 10 }}>
         <KapasMark size={48} />
-        <Text style={{ flex: 1, color: semanticColors.actionPrimary, fontSize: mobileType.answer.size, lineHeight: mobileType.answer.line, fontFamily: headingFamily, textAlign: align }}>
+        <Text style={{ flex: 1, color: semanticColors.actionPrimary, fontFamily: headingFamily, textAlign: align, ...logoMetrics }}>
           {t(locale, "app.name")}
         </Text>
       </View>
       <Text
         style={{
           color: semanticColors.textPrimary,
-          fontSize: mobileType.question.size,
-          lineHeight: mobileType.question.line,
           fontFamily: headingFamily,
           textAlign: align,
+          ...headingMetrics,
         }}
       >
         {t(locale, "onboarding.chooseLanguage")}
       </Text>
-      <Text style={{ color: semanticColors.textSecondary, fontSize: mobileType.body.size, lineHeight: mobileType.body.line, fontFamily: bodyFamily, textAlign: align }}>
+      <Text style={{ color: semanticColors.textSecondary, fontFamily: bodyFamily, textAlign: align, ...bodyMetrics }}>
         {t(locale, "onboarding.chooseLanguageHelp")}
       </Text>
       <LanguageCard

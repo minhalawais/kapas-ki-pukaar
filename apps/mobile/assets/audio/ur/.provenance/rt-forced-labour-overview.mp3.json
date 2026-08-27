@@ -6,14 +6,14 @@
   "scriptUrdu": "جبری یا قرض کی مزدوری۔ کوئی قرض، پیشگی رقم، دھمکی یا رسم کسی کو کام پر مجبور یا جانے سے نہیں روک سکتی۔",
   "scriptSha256": "ee73e5850135604b9eec6ffd3dd2f7e9659595e178e6f7d5d7560d62ae264a49",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "910ab492f6c4728e1f896e1d2237472c644cec8d35e3ae5255eb2b272625967b",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "045ead5ae009f12ef39acc2944a70f1466719b8e899d893b84f2bb2f5236a944",
   "generatedAt": "2026-08-23T09:38:37.305Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 12.233,
     "integratedLufs": -18.6,
     "truePeakDb": -4.9
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:31.069Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

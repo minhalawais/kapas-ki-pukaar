@@ -6,14 +6,14 @@
   "scriptUrdu": "کیا کسی کو چوٹ لگی؟ جواب کے لیے ہاں، نہیں میں سے انتخاب کریں۔",
   "scriptSha256": "7e28d5612d0dc2ea1d844a51288883521e97a41c9820c0ad38550c49f0b0a3ac",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "ceeef7bceefd3e12cf07e82227e910a764d992fca9bb441eb8a885a6cc889a61",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "584373dc523ed3858519cfccc6612aab6e72e0008bd48ac7b1547eff311db6d8",
   "generatedAt": "2026-08-22T08:52:52.178Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -23,6 +23,6 @@
     "integratedLufs": -17.21,
     "truePeakDb": -2.47
   },
-  "remasteredAt": "2026-08-22T09:56:31.027Z",
-  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+  "remasteredAt": "2026-08-24T07:47:55.775Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

@@ -5,15 +5,15 @@ import { BUNDLED_PROMPT_ASSETS } from "./generatedPromptAssets";
 export { PROMPT_FILES, isPromptId, type PromptId };
 
 export const SCREEN_PROMPT_ID = {
-  "M-002": "SC-welcome",
-  "M-003": "SC-welcome",
+  "M-002": "SC-home",
+  "M-003": "SC-home",
   "M-004": "SC-home",
 } as const satisfies Record<string, PromptId>;
 
 export type FoundationScreenId = keyof typeof SCREEN_PROMPT_ID;
 
 /** MP3 decoder + Android audio buffer often finish before the last syllable is audible. */
-const PLAYBACK_TAIL_PADDING_MS = 400;
+const PLAYBACK_TAIL_PADDING_MS = 800;
 
 type PlaybackStatus = {
   isLoaded?: boolean;

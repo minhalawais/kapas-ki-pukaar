@@ -6,14 +6,14 @@
   "scriptUrdu": "خلاصہ سن یا پڑھ کر دیکھیں۔ اگر بات درست ہے تو تصدیق کریں، ورنہ واپس جا کر بدلیں۔",
   "scriptSha256": "87a4e44229c9b04b981c414ab517081210989921aee43bd503e90f23413ca5e2",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "16bfee54daf39508e076fc46059e15845260fdfa323268f5260f412be8a04590",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "90a656e3246afb2a8ca360c8238e1dfb2f8244a92a4ee587e33e9fe82a7e7e5d",
   "generatedAt": "2026-08-22T08:45:08.326Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -23,6 +23,6 @@
     "integratedLufs": -18.23,
     "truePeakDb": -2.5
   },
-  "remasteredAt": "2026-08-22T09:56:25.227Z",
-  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+  "remasteredAt": "2026-08-24T07:47:48.198Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

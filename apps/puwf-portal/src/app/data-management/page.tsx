@@ -61,7 +61,20 @@ export default function DataManagementPage() {
       <PageHeader
         title={t(locale, "portal.data.title")}
         description={t(locale, "portal.data.note")}
-        action={<Button type="button" disabled={rows.length === 0 || exporting} onClick={() => void onExport()}><Download size={16} />{t(locale, "portal.analytics.export")}</Button>}
+        action={
+          <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap">
+            <Button type="button" disabled={rows.length === 0 || exporting} onClick={() => void onExport()}>
+              <Download size={16} />{t(locale, "portal.analytics.export")}
+            </Button>
+            <div className="flex items-center gap-2 rounded-card border border-border/80 bg-surface px-3 py-1.5 shadow-sm">
+              <img
+                src="/brand/puwf_logo.png"
+                alt="PUWF Logo"
+                className="h-12 w-auto max-w-[180px] object-contain sm:h-14"
+              />
+            </div>
+          </div>
+        }
       />
 
       <div className="overflow-hidden rounded-card border border-border bg-surface">

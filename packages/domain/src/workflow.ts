@@ -33,6 +33,7 @@ export interface AnswerOption {
 export type NextRule =
   | { type: "node"; id: string }
   | { type: "map"; by?: string; cases: Record<string, string>; fallback: string }
+  | { type: "conditional"; cases: Array<{ when: Record<string, string | string[]>; id: string }>; fallback: string }
   | { type: "end" };
 
 export interface QuestionNode {
@@ -66,12 +67,12 @@ export const CATEGORY_ENTRY: Record<WorkerCategoryCode, string> = {
   WAG: "wag-what",
   PES: "pes-what",
   HSE: "hse-what",
-  HAR: "har-private",
+  HAR: "har-about",
   CHL: "chl-who",
   FOL: "fol-forced",
   CON: "con-what",
   HRS: "hrs-what",
   SAN: "san-what",
   DIS: "dis-what",
-  OTH: "voice",
+  OTH: "oth-kind",
 };

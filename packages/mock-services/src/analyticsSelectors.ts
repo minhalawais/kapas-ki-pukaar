@@ -256,6 +256,28 @@ export function selectHumanReviewDistribution(rows: Complaint[]): NamedCount[] {
 }
 
 export function selectMonthlyTrend(rows: Complaint[]): NamedCount[] {
+  if (rows.length === 0) return [];
+  const dates = rows.map((r) => r.submittedAt.slice(0, 10)).sort();
+  const minDate = new Date(`${dates[0]}T00:00:00.000Z`);
+  const maxDate = new Date(`${dates[dates.length - 1]}T00:00:00.000Z`);
+  const diffDays = Math.round((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 45 && diffDays >= 2) {
+    const countsMap = new Map<string, number>();
+    for (const row of rows) {
+      const dayKey = row.submittedAt.slice(0, 10);
+      countsMap.set(dayKey, (countsMap.get(dayKey) ?? 0) + 1);
+    }
+    const result: NamedCount[] = [];
+    const cur = new Date(minDate);
+    while (cur <= maxDate) {
+      const key = cur.toISOString().slice(0, 10);
+      result.push({ key, count: countsMap.get(key) ?? 0 });
+      cur.setDate(cur.getDate() + 1);
+    }
+    return result;
+  }
+
   return countsBy(rows, (row) => row.submittedAt.slice(0, 7)).sort((a, b) => a.key.localeCompare(b.key));
 }
 

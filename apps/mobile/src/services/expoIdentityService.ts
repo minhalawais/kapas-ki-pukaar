@@ -17,11 +17,28 @@ export function formatCnic(value: string): string {
   return `${digits.slice(0, 5)}-${digits.slice(5, 12)}-${digits.slice(12)}`;
 }
 
+export function normalizePhone(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 11);
+}
+
+export function isValidPhone(value: string): boolean {
+  const digits = normalizePhone(value);
+  return digits.length === 11;
+}
+
+export function formatPhone(value: string): string {
+  const digits = normalizePhone(value);
+  if (digits.length <= 4) return digits;
+  return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+}
+
 export const expoIdentityService = {
   async saveCnic(draftId: string, value: string): Promise<string> {
-    const normalized = normalizeCnic(value);
-    if (!isValidCnic(normalized)) {
-      throw new Error("invalid-cnic");
+    const isPhone = value.replace(/\D/g, "").length <= 11;
+    const normalized = isPhone ? normalizePhone(value) : normalizeCnic(value);
+    const valid = isPhone ? isValidPhone(normalized) : isValidCnic(normalized);
+    if (!valid) {
+      throw new Error("invalid-identity");
     }
     await SecureStore.setItemAsync(keyFor(draftId), normalized, {
       keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,

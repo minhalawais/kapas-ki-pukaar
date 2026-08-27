@@ -22,6 +22,7 @@ import {
   complaintWorkerStatusKey,
   formatComplaintDate,
 } from "../../src/features/tracking/complaintPresentation";
+import { useAutoPromptId } from "../../src/hooks/use-prompt-playback";
 import { isRTL } from "../../src/i18n/rtl";
 import { expoSpeechService } from "../../src/services/expoSpeechService";
 import { useLocaleStore } from "../../src/stores/localeStore";
@@ -99,6 +100,7 @@ export default function ComplaintDetailScreen() {
   const summaryIsLtr = Boolean(summary && /[A-Za-z]/.test(summary));
   const details = complaint ? answerRows(complaint, locale) : [];
   const workerActions = complaint?.actions.filter(isWorkerVisibleAction) ?? [];
+  useAutoPromptId("SC-complaint-detail");
 
   return (
     <ScreenShell
@@ -144,7 +146,7 @@ export default function ComplaintDetailScreen() {
 
           <View style={{ gap: 10 }}>
             <SectionHeading icon="chatbox-ellipses-outline" rtl={rtl} family={headingFamily}>{t(locale, "complaints.whatYouToldUs")}</SectionHeading>
-            <View style={{ borderStartWidth: 4, borderStartColor: semanticColors.progressAccent, paddingStart: 13, gap: 6 }}>
+            <View style={{ ...(rtl ? { borderRightWidth: 4, paddingRight: 13 } : { borderLeftWidth: 4, paddingLeft: 13 }), borderColor: semanticColors.progressAccent, gap: 6 }}>
               <Text style={{ color: semanticColors.textSecondary, fontSize: mobileType.caption.size, lineHeight: mobileType.caption.line, fontFamily: strongFamily, textAlign: align }}>{t(locale, "complaints.summary")}</Text>
               <Text style={{ color: semanticColors.textPrimary, fontSize: mobileType.body.size, lineHeight: mobileType.body.line, fontFamily: summaryIsLtr ? fontFamily.ui : family, textAlign: summaryIsLtr ? "left" : align, writingDirection: summaryIsLtr ? "ltr" : rtl ? "rtl" : "ltr" }}>{summary ?? t(locale, `category.${complaint.categoryCode}` as MessageKey)}</Text>
             </View>

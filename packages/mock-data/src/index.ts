@@ -6,6 +6,7 @@ export {
   getGoldenComplaint,
   goldenComplaints,
   goldenTrackingId,
+  mobileDemoComplaints,
 } from "./scenarios";
 export { buildComplaint, dueAtFrom, receivedAction, trackingIdFromIndex } from "./factory";
 export { RIGHTS_TOPICS } from "./rightsTopics";

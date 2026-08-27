@@ -176,7 +176,19 @@ export default function DashboardPage() {
 
   return (
     <section className="space-y-5">
-      <PageHeader title={t(locale, "portal.dashboard.title")} description={t(locale, "portal.dashboard.note")} />
+      <PageHeader
+        title={t(locale, "portal.dashboard.title")}
+        description={t(locale, "portal.dashboard.note")}
+        action={
+          <div className="flex items-center gap-2 rounded-card border border-border/80 bg-surface px-3 py-1.5 shadow-sm">
+            <img
+              src="/brand/puwf_logo.png"
+              alt="PUWF Logo"
+              className="h-12 w-auto max-w-[180px] object-contain sm:h-14"
+            />
+          </div>
+        }
+      />
       {query.isLoading || !filtersReady ? <LoadingState label={t(locale, "common.loading")} /> : null}
       {query.isError ? <ErrorState title={t(locale, "common.error")} retryLabel={t(locale, "common.retry")} onRetry={() => void query.refetch()} /> : null}
 
@@ -202,17 +214,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <section aria-labelledby="risk-heading" className="space-y-3">
-            <div>
-              <h2 id="risk-heading" className="text-lg font-semibold text-ink">{t(locale, "portal.dashboard.riskTitle")}</h2>
-              <p className="text-xs text-muted">{t(locale, "portal.dashboard.riskNote")}</p>
-            </div>
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-              <DonutChart title={t(locale, "portal.chart.priority")} rows={snapshot.byPriority} emptyLabel={t(locale, "common.empty")} labelFor={(key) => t(locale, `portal.priority.${key}` as MessageKey)} colorFor={prioritySeriesColor} />
-              <DonutChart title={t(locale, "portal.chart.status")} rows={snapshot.byStatus} emptyLabel={t(locale, "common.empty")} labelFor={(key) => t(locale, `portal.status.${key}` as MessageKey)} />
-            </div>
-          </section>
-
           <section aria-labelledby="access-heading" className="space-y-3">
             <div>
               <h2 id="access-heading" className="text-lg font-semibold text-ink">{t(locale, "portal.dashboard.accessTitle")}</h2>
@@ -222,6 +223,17 @@ export default function DashboardPage() {
               <RankedList title={t(locale, "portal.chart.category")} rows={snapshot.byCategory} emptyLabel={t(locale, "common.empty")} labelFor={(key) => t(locale, `category.${key}` as MessageKey)} />
               <RankedList title={t(locale, "portal.chart.geography")} rows={safeGeography} emptyLabel={t(locale, "common.empty")} labelFor={(key) => geographyLabel(locale, key)} />
               <RankedList title={t(locale, "portal.chart.gender")} rows={safeGender} emptyLabel={t(locale, "common.empty")} labelFor={(key) => key === "suppressed" ? t(locale, "portal.analytics.suppressed") : t(locale, `portal.gender.${key}` as MessageKey)} />
+            </div>
+          </section>
+
+          <section aria-labelledby="risk-heading" className="space-y-3">
+            <div>
+              <h2 id="risk-heading" className="text-lg font-semibold text-ink">{t(locale, "portal.dashboard.riskTitle")}</h2>
+              <p className="text-xs text-muted">{t(locale, "portal.dashboard.riskNote")}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              <DonutChart title={t(locale, "portal.chart.priority")} rows={snapshot.byPriority} emptyLabel={t(locale, "common.empty")} labelFor={(key) => t(locale, `portal.priority.${key}` as MessageKey)} colorFor={prioritySeriesColor} />
+              <DonutChart title={t(locale, "portal.chart.status")} rows={snapshot.byStatus} emptyLabel={t(locale, "common.empty")} labelFor={(key) => t(locale, `portal.status.${key}` as MessageKey)} />
             </div>
           </section>
 

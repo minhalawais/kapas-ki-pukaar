@@ -2,7 +2,15 @@ import { Text, View } from "react-native";
 
 import { fontFamily, layout, semanticColors } from "../theme/tokens";
 
-export function AppAttributionFooter({ stickToBottom = false }: { stickToBottom?: boolean }) {
+export function AppAttributionFooter({
+  stickToBottom = false,
+  hideDivider = false,
+  marginTop,
+}: {
+  stickToBottom?: boolean;
+  hideDivider?: boolean;
+  marginTop?: number;
+}) {
   return (
     <View
       accessible
@@ -11,23 +19,25 @@ export function AppAttributionFooter({ stickToBottom = false }: { stickToBottom?
       style={{
         alignSelf: "stretch",
         alignItems: "center",
-        marginTop: stickToBottom ? "auto" : 18,
+        marginTop: typeof marginTop === "number" ? marginTop : (stickToBottom ? "auto" : 18),
         paddingHorizontal: layout.mobilePagePaddingX,
-        paddingTop: 4,
+        paddingTop: hideDivider ? 0 : 4,
         paddingBottom: stickToBottom ? 4 : 0,
         gap: 7,
       }}
     >
-      <View
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-        style={{
-          width: 44,
-          height: 2,
-          borderRadius: 1,
-          backgroundColor: semanticColors.borderEssential,
-        }}
-      />
+      {hideDivider ? null : (
+        <View
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+          style={{
+            width: 44,
+            height: 2,
+            borderRadius: 1,
+            backgroundColor: semanticColors.borderEssential,
+          }}
+        />
+      )}
       <Text
         numberOfLines={2}
         adjustsFontSizeToFit

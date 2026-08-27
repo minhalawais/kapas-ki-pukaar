@@ -6,14 +6,14 @@
   "scriptUrdu": "خبردار کرنے والی نشانیاں۔ ادائیگی دیر سے ہو، کچھ رقم روک لی جائے، طے شدہ سے کم اجرت ملے یا درمیان والا رقم رکھ لے۔ لکھا ہوا وزن بدل جائے، اضافی وقت کی اجرت نہ ملے یا کٹوتی کی وجہ نہ بتائی جائے۔",
   "scriptSha256": "debc5ec9ace24456e1ce2da1cb21995166ae091e0e36fe02bb2f8eba7fbeb181",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "b0e645d281cf57db5ea2221fe849f74480c154232b734a7dfc39a9d114099855",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "546d65c4f2af1a6b61e64981c818b81b71063400234ef8bf9c37fe2ff833c3ee",
   "generatedAt": "2026-08-23T09:20:35.300Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 16.254,
     "integratedLufs": -19.17,
     "truePeakDb": -3.61
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:09.730Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

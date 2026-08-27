@@ -4,8 +4,8 @@ import { t, type MessageKey } from "@kapas/localization";
 import { rightsContentService } from "@kapas/mock-services";
 import { RIGHTS_PROMPT_IDS, rightsPromptIds, type PromptId } from "@kapas/speech";
 import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { KapasMark } from "../../src/components/kapas-mark";
@@ -18,11 +18,12 @@ import { rightsIcon, rightsPalette } from "../../src/features/rights/rightsVisua
 import { WageRightsStory } from "../../src/features/rights/WageRightsStory";
 import { WageRightsActions, WageRightsFacts } from "../../src/features/rights/WageRightsSummary";
 import { isRTL } from "../../src/i18n/rtl";
+import { imagePreloadService } from "../../src/services/imagePreloadService";
 import { promptAudioService } from "../../src/services/promptAudioService";
 import { useGrievanceDraftStore } from "../../src/stores/grievanceDraftStore";
 import { useLocaleStore } from "../../src/stores/localeStore";
 import { fontFamily, mobileType, semanticColors } from "../../src/theme/tokens";
-import { urduSafeText } from "../../src/theme/urdu-text";
+import { urduBrandText, urduSafeText } from "../../src/theme/urdu-text";
 
 function RightsTopBar({ speaking, loading, progress, onBack, onListen }: { speaking: boolean; loading: boolean; progress: number; onBack: () => void; onListen: () => void }) {
   const locale = useLocaleStore((state) => state.locale);
@@ -33,16 +34,16 @@ function RightsTopBar({ speaking, loading, progress, onBack, onListen }: { speak
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={t(locale, "common.back")} style={({ pressed }) => ({ position: "absolute", right: rtl ? 0 : undefined, left: rtl ? undefined : 0, width: 46, height: 46, borderRadius: 23, borderWidth: 1, borderColor: semanticColors.borderEssential, backgroundColor: semanticColors.surface, alignItems: "center", justifyContent: "center", opacity: pressed ? 0.72 : 1 })}>
         <Ionicons name={rtl ? "arrow-forward" : "arrow-back"} size={25} color={semanticColors.voiceActiveStrong} />
       </Pressable>
-      <View style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", gap: 8, maxWidth: "58%", overflow: "visible" }}>
-        <KapasMark size={38} style={{ marginBottom: 2 }} />
+      <View style={{ position: "absolute", left: 50, right: 50, top: 0, bottom: 0, flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 6, overflow: "visible" }}>
+        <KapasMark size={26} />
         <Text
-          numberOfLines={2}
+          numberOfLines={1}
           style={{
-            flexShrink: 1,
             color: semanticColors.actionPrimary,
+            fontSize: 19,
+            lineHeight: rtl ? 34 : 24,
             fontFamily: rtl ? fontFamily.urduHeading : fontFamily.uiBold,
-            textAlign: rtl ? "right" : "left",
-            ...(rtl ? urduSafeText(18, "heading") : { fontSize: 18, lineHeight: 24 }),
+            paddingBottom: rtl ? 4 : 0,
           }}
         >
           {t(locale, "app.name")}
@@ -145,20 +146,15 @@ export default function RightsDetailScreen() {
   const narrationRunRef = useRef(0);
   const setRequestedCategory = useGrievanceDraftStore((state) => state.setRequestedCategory);
 
-  useEffect(() => () => {
-    narrationRunRef.current += 1;
-    void promptAudioService.stop();
-  }, []);
-
-  const stopNarration = () => {
+  const stopNarration = useCallback(() => {
     narrationRunRef.current += 1;
     void promptAudioService.stop();
     setSpeaking(false);
     setNarrationIndex(0);
     setNarrationTotal(0);
-  };
+  }, []);
 
-  const startNarration = (promptIds: readonly PromptId[]) => {
+  const startNarration = useCallback((promptIds: readonly PromptId[]) => {
     if (promptIds.length === 0 || locale !== "ur") {
       return;
     }
@@ -187,7 +183,17 @@ export default function RightsDetailScreen() {
     }).catch(() => {
       if (narrationRunRef.current === run) setSpeaking(false);
     });
-  };
+  }, [locale]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!topic?.id || locale !== "ur") {
+        return;
+      }
+      startNarration(rightsPromptIds(topic.id));
+      return stopNarration;
+    }, [locale, startNarration, stopNarration, topic?.id]),
+  );
 
   const handleListen = () => {
     if (!topic) {
@@ -224,6 +230,10 @@ export default function RightsDetailScreen() {
   const isWage = topic?.id === "wages";
   const hasIllustratedStory = topic ? isWage || hasFieldStory(topic.id) : false;
 
+  useEffect(() => {
+    void imagePreloadService.preloadRights();
+  }, []);
+
   return (
     <ScreenShell
       header={<RightsTopBar speaking={speaking} loading={query.isLoading} progress={narrationTotal > 0 ? narrationIndex / narrationTotal : 0} onBack={() => router.back()} onListen={handleListen} />}
@@ -244,7 +254,7 @@ export default function RightsDetailScreen() {
           <View style={{ paddingHorizontal: 20, paddingTop: 18, gap: 16 }}>
             {isWage ? <WageRightsFacts /> : hasFieldStory(topic.id) ? <RightsEssentialFacts topic={topic} /> : <GuidanceSection titleKey="rights.section.guidance" keys={topic.guidanceKeys} tone="green" />}
             <GuidanceSection titleKey="rights.section.warning" keys={topic.warningKeys} tone="red" compact={hasIllustratedStory} />
-            {isWage ? <WageRightsActions onListenCalculation={handleListenCalculation} onReport={handleReport} /> : hasFieldStory(topic.id) ? <RightsLearningActions topic={topic} onListen={handleListenActions} onReport={handleReport} /> : <GuidanceSection titleKey="rights.section.action" keys={topic.actionKeys} tone="teal" numbered />}
+            {isWage ? <WageRightsActions onListenCalculation={handleListenCalculation} /> : hasFieldStory(topic.id) ? <RightsLearningActions topic={topic} onListen={handleListenActions} /> : <GuidanceSection titleKey="rights.section.action" keys={topic.actionKeys} tone="teal" numbered />}
             {hasIllustratedStory ? null : (
               <>
                 <PrimaryCta labelKey="rights.reporting.cta" icon="mic" onPress={handleReport} />

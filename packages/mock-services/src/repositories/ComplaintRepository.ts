@@ -1,6 +1,6 @@
 import type { CaseAction, CaseStatus, Complaint } from "@kapas/domain";
 import { persistenceKeys, withDerivedFields } from "@kapas/domain";
-import { generateComplaints } from "@kapas/mock-data";
+import { generateComplaints, mobileDemoComplaints } from "@kapas/mock-data";
 
 import type { KeyValueStore } from "../storage/KeyValueStore";
 
@@ -56,6 +56,7 @@ export class PersistedComplaintRepository implements ComplaintRepositoryContract
     private readonly store: KeyValueStore,
     private readonly key: string,
     private readonly seed: () => Complaint[],
+    private readonly seedWhenStoredEmpty = false,
   ) {}
 
   async list(): Promise<Complaint[]> {
@@ -99,6 +100,9 @@ export class PersistedComplaintRepository implements ComplaintRepositoryContract
     }
     try {
       this.cache = (JSON.parse(raw) as Complaint[]).map((row) => normalizeLegacyComplaint(row));
+      if (this.seedWhenStoredEmpty && this.cache.length === 0) {
+        await this.reset();
+      }
     } catch {
       await this.reset();
     }
@@ -113,5 +117,10 @@ export function createPortalComplaintRepository(store: KeyValueStore): Complaint
 }
 
 export function createMobileComplaintRepository(store: KeyValueStore): ComplaintRepositoryContract {
-  return new PersistedComplaintRepository(store, persistenceKeys.mobileComplaints, () => []);
+  return new PersistedComplaintRepository(
+    store,
+    persistenceKeys.mobileComplaints,
+    () => mobileDemoComplaints(),
+    true,
+  );
 }

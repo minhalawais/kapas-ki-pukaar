@@ -1,8 +1,8 @@
-"""Generate responsive Kapas ki Pukaar assets from the approved logo mark.
+"""Generate responsive Kapas ki Pukaar assets from the approved logo master.
 
-The compact mark is used in product chrome and platform icons. The English
-lockup is generated deterministically for launch, social, and large-format
-placements. Product headings remain live text so they stay localized.
+The approved source is a full bitmap lockup, but its text is soft at small
+sizes. Product assets therefore derive the symbol from the master and redraw
+English text lockups with local fonts for crisp app and web rendering.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "assets" / "brand"
-SOURCE_MARK = OUT / "logo-mark-v2.png"
+SOURCE_LOGO = OUT / "logo-master-v3.png"
 
 CREAM = (247, 243, 232, 255)
 DEEP_GREEN = (11, 93, 59, 255)
@@ -36,8 +36,55 @@ def trim_alpha(image: Image.Image) -> Image.Image:
     rgba = image.convert("RGBA")
     alpha_box = rgba.getchannel("A").getbbox()
     if alpha_box is None:
-        raise ValueError(f"Brand source has no visible pixels: {SOURCE_MARK}")
+        raise ValueError(f"Brand source has no visible pixels: {SOURCE_LOGO}")
     return rgba.crop(alpha_box)
+
+
+def trim_visual_alpha(image: Image.Image, threshold: int = 40) -> Image.Image:
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    cleaned_alpha = alpha.point(lambda value: 0 if value < threshold else value)
+    rgba.putalpha(cleaned_alpha)
+    box = cleaned_alpha.getbbox()
+    if box is None:
+        raise ValueError(f"Brand source has no visible pixels above alpha threshold: {SOURCE_LOGO}")
+    return rgba.crop(box)
+
+
+def visible_box(image: Image.Image, threshold: int = 40) -> tuple[int, int, int, int]:
+    rgba = image.convert("RGBA")
+    mask = rgba.getchannel("A").point(lambda value: 255 if value >= threshold else 0)
+    box = mask.getbbox()
+    if box is None:
+        raise ValueError(f"Brand source has no visible pixels above alpha threshold: {SOURCE_LOGO}")
+    return box
+
+
+def derive_symbol_mark(logo: Image.Image) -> Image.Image:
+    left, top, right, bottom = visible_box(logo)
+    width = right - left
+    height = bottom - top
+    symbol_bottom = top + round(height * 0.63)
+    pad_x = round(width * 0.045)
+    pad_y = round(height * 0.035)
+    crop = logo.crop(
+        (
+            max(0, left - pad_x),
+            max(0, top - pad_y),
+            min(logo.width, right + pad_x),
+            min(logo.height, symbol_bottom + pad_y),
+        )
+    )
+    return trim_visual_alpha(crop)
+
+
+def sharpen_artwork(image: Image.Image) -> Image.Image:
+    rgba = trim_visual_alpha(image)
+    high_res = rgba.resize((rgba.width * 2, rgba.height * 2), Image.Resampling.LANCZOS)
+    high_res = high_res.filter(ImageFilter.UnsharpMask(radius=1.1, percent=190, threshold=2))
+    sharpened = high_res.resize(rgba.size, Image.Resampling.LANCZOS)
+    sharpened = sharpened.filter(ImageFilter.UnsharpMask(radius=0.7, percent=140, threshold=1))
+    return trim_visual_alpha(sharpened, threshold=18)
 
 
 def fit(
@@ -48,7 +95,11 @@ def fit(
 ) -> Image.Image:
     canvas = Image.new("RGBA", canvas_size, background)
     fitted = artwork.copy()
-    fitted.thumbnail(max_size, Image.Resampling.LANCZOS)
+    scale = min(max_size[0] / fitted.width, max_size[1] / fitted.height)
+    fitted = fitted.resize(
+        (max(1, round(fitted.width * scale)), max(1, round(fitted.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
     x = (canvas_size[0] - fitted.width) // 2
     y = (canvas_size[1] - fitted.height) // 2
     canvas.alpha_composite(fitted, (x, y))
@@ -89,30 +140,32 @@ def draw_tracked(
 
 
 def make_vertical_lockup(mark: Image.Image) -> Image.Image:
-    canvas = Image.new("RGBA", (1200, 1400), TRANSPARENT)
-    canvas.alpha_composite(fit(mark, (820, 820), (760, 760)), (190, 40))
+    canvas = Image.new("RGBA", (1200, 1280), TRANSPARENT)
+    mark_block = fit(mark, (960, 710), (910, 650))
+    canvas.alpha_composite(mark_block, (120, 0))
 
     draw = ImageDraw.Draw(canvas)
-    primary = ImageFont.truetype(str(find_inter_font("800ExtraBold")), 190)
-    secondary = ImageFont.truetype(str(find_inter_font("600SemiBold")), 80)
+    primary = ImageFont.truetype(str(find_inter_font("800ExtraBold")), 205)
+    secondary = ImageFont.truetype(str(find_inter_font("600SemiBold")), 86)
     primary_text = "KAPAS"
     secondary_text = "KI PUKAAR"
     primary_width = tracked_width(draw, primary_text, primary, 4)
     secondary_width = tracked_width(draw, secondary_text, secondary, 18)
-    draw_tracked(draw, ((1200 - primary_width) // 2, 845), primary_text, primary, DEEP_GREEN, 4)
-    draw_tracked(draw, ((1200 - secondary_width) // 2, 1070), secondary_text, secondary, TEAL, 18)
+    draw_tracked(draw, ((1200 - primary_width) // 2, 690), primary_text, primary, DEEP_GREEN, 4)
+    draw_tracked(draw, ((1200 - secondary_width) // 2, 932), secondary_text, secondary, TEAL, 18)
     return trim_alpha(canvas)
 
 
 def make_horizontal_lockup(mark: Image.Image) -> Image.Image:
-    canvas = Image.new("RGBA", (1800, 560), TRANSPARENT)
-    canvas.alpha_composite(fit(mark, (500, 500), (440, 440)), (20, 30))
+    canvas = Image.new("RGBA", (1760, 620), TRANSPARENT)
+    mark_block = fit(mark, (560, 500), (530, 430))
+    canvas.alpha_composite(mark_block, (30, 56))
 
     draw = ImageDraw.Draw(canvas)
-    primary = ImageFont.truetype(str(find_inter_font("800ExtraBold")), 175)
-    secondary = ImageFont.truetype(str(find_inter_font("600SemiBold")), 67)
-    draw_tracked(draw, (555, 90), "KAPAS", primary, DEEP_GREEN, 3)
-    draw_tracked(draw, (562, 310), "KI PUKAAR", secondary, TEAL, 15)
+    primary = ImageFont.truetype(str(find_inter_font("800ExtraBold")), 190)
+    secondary = ImageFont.truetype(str(find_inter_font("600SemiBold")), 74)
+    draw_tracked(draw, (620, 105), "KAPAS", primary, DEEP_GREEN, 3)
+    draw_tracked(draw, (627, 342), "KI PUKAAR", secondary, TEAL, 15)
     return trim_alpha(canvas)
 
 
@@ -136,36 +189,38 @@ def copy_asset(source: Path, destination: Path) -> None:
 
 
 def main() -> None:
-    if not SOURCE_MARK.exists():
-        raise FileNotFoundError(f"Approved logo master is missing: {SOURCE_MARK}")
+    if not SOURCE_LOGO.exists():
+        raise FileNotFoundError(f"Approved logo master is missing: {SOURCE_LOGO}")
 
-    source = Image.open(SOURCE_MARK).convert("RGBA")
+    source = Image.open(SOURCE_LOGO).convert("RGBA")
     if source.getchannel("A").getextrema()[0] == 255:
         raise ValueError("Approved logo master must have a transparent background")
 
-    mark = trim_alpha(source)
+    logo = trim_visual_alpha(source)
+    mark = sharpen_artwork(derive_symbol_mark(source))
     vertical_lockup = make_vertical_lockup(mark)
     horizontal_lockup = make_horizontal_lockup(mark)
 
-    save_png(fit(mark, (1024, 1024), (920, 920)), OUT / "logo-mark.png")
+    save_png(fit(mark, (1024, 1024), (900, 900)), OUT / "logo-mark.png")
+    save_png(mark, OUT / "logo-mark-inline.png")
     for size in (512, 256, 160, 80, 40, 32):
-        target = round(size * 0.9)
+        target = round(size * 0.88)
         save_png(fit(mark, (size, size), (target, target)), OUT / f"logo-mark-{size}.png")
-    save_webp(fit(mark, (512, 512), (460, 460)), OUT / "logo-mark.webp")
+    save_webp(fit(mark, (512, 512), (450, 450)), OUT / "logo-mark.webp")
 
     save_png(vertical_lockup, OUT / "logo-lockup-vertical.png")
     save_png(vertical_lockup, OUT / "logo-lockup.png")
     save_png(horizontal_lockup, OUT / "logo-lockup-horizontal.png")
     save_webp(horizontal_lockup, OUT / "logo-lockup-horizontal.webp")
 
-    save_png(fit(mark, (1024, 1024), (720, 720), CREAM), OUT / "icon-1024.png")
-    save_png(fit(mark, (512, 512), (360, 360), CREAM), OUT / "icon-512.png")
-    save_png(fit(mark, (192, 192), (136, 136), CREAM), OUT / "icon-192.png")
-    save_png(fit(mark, (180, 180), (128, 128), CREAM), OUT / "apple-icon-180.png")
-    save_png(fit(mark, (1024, 1024), (548, 548)), OUT / "adaptive-foreground.png")
+    save_png(fit(mark, (1024, 1024), (860, 860), CREAM), OUT / "icon-1024.png")
+    save_png(fit(mark, (512, 512), (430, 430), CREAM), OUT / "icon-512.png")
+    save_png(fit(mark, (192, 192), (162, 162), CREAM), OUT / "icon-192.png")
+    save_png(fit(mark, (180, 180), (152, 152), CREAM), OUT / "apple-icon-180.png")
+    save_png(fit(mark, (1024, 1024), (780, 780)), OUT / "adaptive-foreground.png")
     save_png(make_monochrome_foreground(mark), OUT / "monochrome-foreground.png")
 
-    splash = fit(vertical_lockup, (1024, 1024), (490, 710), CREAM)
+    splash = fit(vertical_lockup, (1024, 1024), (720, 820), CREAM)
     save_png(splash, OUT / "splash-lockup.png")
     save_png(splash, OUT / "splash-icon.png")
 
@@ -175,10 +230,11 @@ def main() -> None:
     favicon_ico_source = Image.open(OUT / "favicon-48.png").convert("RGBA")
     favicon_ico_source.save(OUT / "favicon.ico", format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
 
-    save_png(fit(horizontal_lockup, (1200, 630), (940, 330), CREAM), OUT / "social-card-1200x630.png")
+    save_png(fit(horizontal_lockup, (1200, 630), (940, 520), CREAM), OUT / "social-card-1200x630.png")
 
     copies: list[tuple[Path, Path]] = [
         (OUT / "logo-mark.png", ROOT / "apps/mobile/assets/logo-mark.png"),
+        (OUT / "logo-mark-inline.png", ROOT / "apps/mobile/assets/logo-mark-inline.png"),
         (OUT / "logo-lockup-vertical.png", ROOT / "apps/mobile/assets/logo-lockup.png"),
         (OUT / "icon-1024.png", ROOT / "apps/mobile/assets/icon.png"),
         (OUT / "adaptive-foreground.png", ROOT / "apps/mobile/assets/adaptive-icon.png"),
@@ -195,12 +251,16 @@ def main() -> None:
         (OUT / "social-card-1200x630.png", ROOT / "apps/puwf-portal/src/app/opengraph-image.png"),
         (OUT / "social-card-1200x630.png", ROOT / "apps/puwf-portal/src/app/twitter-image.png"),
         (OUT / "favicon-32.png", ROOT / "apps/puwf-portal/public/favicon.png"),
+        (OUT / "favicon-16.png", ROOT / "apps/puwf-portal/public/favicon-16x16.png"),
+        (OUT / "favicon-32.png", ROOT / "apps/puwf-portal/public/favicon-32x32.png"),
         (OUT / "favicon.ico", ROOT / "apps/puwf-portal/public/favicon.ico"),
+        (OUT / "icon-192.png", ROOT / "apps/puwf-portal/public/android-chrome-192x192.png"),
+        (OUT / "icon-512.png", ROOT / "apps/puwf-portal/public/android-chrome-512x512.png"),
     ]
     for source_path, destination in copies:
         copy_asset(source_path, destination)
 
-    print(f"mark source {source.size}; trimmed {mark.size}")
+    print(f"logo source {source.size}; lockup trimmed {logo.size}; mark derived {mark.size}")
     print(f"vertical lockup {vertical_lockup.size}; horizontal lockup {horizontal_lockup.size}")
 
 

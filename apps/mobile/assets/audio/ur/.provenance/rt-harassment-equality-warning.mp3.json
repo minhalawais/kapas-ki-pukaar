@@ -6,14 +6,14 @@
   "scriptUrdu": "خبردار کرنے والی نشانیاں۔ ناپسندیدہ چھونا، جنسی مطالبہ، گالی، دھمکی، پیچھا، ہتھیار یا خاموش رہنے کا دباؤ۔ عورت یا مرد ہونے، برادری، مذہب، زبان، معذوری، عمر یا مہاجر ہونے کی وجہ سے کم اجرت یا برا سلوک۔",
   "scriptSha256": "d296963ebb3af6b9beecacc6d8147c63056f66c0644f7effdbaf1d7aa981e66a",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "0ed4ac567497e4fc2b652da99277a5618ccd602cbf783f8d53adffa51a426143",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "9128a0a2a5f66e751ab808f58e5c9df69d2772099e2fc22abd2ce4dec422db3a",
   "generatedAt": "2026-08-23T09:35:18.792Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 24.666,
     "integratedLufs": -19.02,
     "truePeakDb": -2.4
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:26.194Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

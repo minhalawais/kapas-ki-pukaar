@@ -6,14 +6,14 @@
   "scriptUrdu": "یاد رکھنے کی باتیں۔ عمر کے اصول صوبے کے مطابق مختلف ہیں، مگر خطرناک کام اور بال مزدوری کی بدترین شکلیں ممنوع ہیں۔ کام بچے کی تعلیم، صحت اور نشوونما کی جگہ نہیں لے سکتا۔",
   "scriptSha256": "cad395f02b3faba0f0ee7b60ec736cd31482a6f56238d9de8f84c54da40454ad",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "da38371b358c4caef8c42659324833566a557d928c2854678c5ea05d2aa13498",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "582a78c160536fea77ddeb42a9254f8725f66b39fbe33e9486864d63b3d7627f",
   "generatedAt": "2026-08-23T09:36:57.892Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 16.612,
     "integratedLufs": -18.37,
     "truePeakDb": -5.02
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:28.591Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

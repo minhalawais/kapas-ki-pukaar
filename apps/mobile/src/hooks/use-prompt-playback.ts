@@ -8,7 +8,6 @@ import {
   type PromptId,
 } from "../services/promptAudioService";
 import { useLocaleStore } from "../stores/localeStore";
-import { useVoiceGuidanceStore } from "../stores/voiceGuidanceStore";
 
 type PlaybackState = "idle" | "loading" | "playing" | "error";
 
@@ -25,12 +24,10 @@ export function useAutoPromptPlayback(target: AutoPromptTarget) {
   const [state, setState] = useState<PlaybackState>("idle");
   const generationRef = useRef(0);
   const locale = useLocaleStore((current) => current.locale);
-  const guidanceEnabled = useVoiceGuidanceStore((current) => current.enabled);
-  const guidanceHydrated = useVoiceGuidanceStore((current) => current.hydrated);
 
   useFocusEffect(
     useCallback(() => {
-      if (!target || locale !== "ur" || !guidanceHydrated || !guidanceEnabled) {
+      if (!target || locale !== "ur") {
         setState("idle");
         return;
       }
@@ -65,14 +62,15 @@ export function useAutoPromptPlayback(target: AutoPromptTarget) {
         void promptAudioService.stop();
         setState("idle");
       };
-    }, [guidanceEnabled, guidanceHydrated, locale, target?.kind, target && "id" in target ? target.id : null]),
+    }, [locale, target?.kind, target && "id" in target ? target.id : null]),
   );
 
   return { state };
 }
 
-export function useAutoScreenPrompt(screenId: FoundationScreenId) {
-  return useAutoPromptPlayback({ kind: "screen", id: screenId });
+export function useAutoScreenPrompt(screenId: FoundationScreenId | null) {
+  const target: AutoPromptTarget = screenId ? { kind: "screen", id: screenId } : null;
+  return useAutoPromptPlayback(target);
 }
 
 export function useAutoPromptId(promptId: string | undefined) {

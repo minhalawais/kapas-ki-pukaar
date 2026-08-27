@@ -6,6 +6,8 @@
     "dev": "turbo run dev",
     "dev:portal": "pnpm --filter @kapas/puwf-portal dev",
     "dev:mobile": "pnpm --filter @kapas/mobile dev",
+    "mobile:build:apk": "pnpm --filter @kapas/mobile build:apk",
+    "mobile:build:apk:local": "pnpm --filter @kapas/mobile build:apk:local",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
@@ -23,7 +25,10 @@
     "voice:sync": "node tooling/voice-prompts/generate.mjs sync",
     "voice:remaster": "node tooling/voice-prompts/generate.mjs remaster",
     "voice:verify": "node tooling/voice-prompts/generate.mjs verify",
-    "voice:test": "node --test tooling/voice-prompts/generate.test.mjs"
+    "voice:test": "node --test tooling/voice-prompts/generate.test.mjs",
+    "eas-build-pre-install": "corepack enable && corepack prepare pnpm@9.15.0 --activate",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
@@ -41,5 +46,11 @@
       "react": "19.0.0",
       "react-dom": "19.0.0"
     }
+  },
+  "version": "1.0.0",
+  "dependencies": {
+    "expo": "~53.0.27",
+    "react": "19.0.0",
+    "react-native": "0.79.6"
   }
 }

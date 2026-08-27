@@ -29,17 +29,17 @@ const IMPACT_KEYS: Record<GroupImpact, MessageKey> = {
   "not-sure": "range.unsure",
 };
 
-export function demoAudioSrc(localUri: string | undefined): string | null {
+export function demoAudioSrc(localUri: string | undefined): string {
   if (!localUri) {
-    return null;
+    return "/demo-audio/worker-statement.mp3";
   }
   if (localUri.startsWith("asset://demo-audio/")) {
-    return "/demo-audio/placeholder.wav";
+    return "/demo-audio/worker-statement.mp3";
   }
   if (localUri.startsWith("http://") || localUri.startsWith("https://") || localUri.startsWith("/")) {
     return localUri;
   }
-  return null;
+  return "/demo-audio/worker-statement.mp3";
 }
 
 export function formatDuration(durationMs: number): string {

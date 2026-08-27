@@ -6,14 +6,14 @@
   "scriptUrdu": "گرمی، اوقات کار اور آرام۔ کام اس طرح جاری نہیں رہنا چاہیے کہ شدید گرمی کا خطرہ بنے یا ضروری آرام نہ ملے۔",
   "scriptSha256": "4b6cd7806f9fa9c4a641e6e90d063321d844abb3944651b0766f23a692b1d7f1",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "e233eebce7c7de0a2807de2e294ffe396035b21dc97e67f5992f3d61355a2bbb",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "c32eaafd0b617e805e9a341ff9f63e473b347c080020adcaebfa1844c230e27c",
   "generatedAt": "2026-08-23T09:26:36.286Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 11.885,
     "integratedLufs": -18.08,
     "truePeakDb": -5.28
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:15.322Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

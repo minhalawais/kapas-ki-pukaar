@@ -7,15 +7,6 @@ export const commonNodes: QuestionNode[] = [
     helperKey: "grievance.identity.body",
     type: "cnic",
     section: "intro",
-    next: { type: "node", id: "intro" },
-  },
-  {
-    id: "intro",
-    promptKey: "grievance.intro.prompt",
-    helperKey: "grievance.intro.body",
-    type: "notice",
-    required: false,
-    section: "intro",
     next: { type: "node", id: "category" },
   },
   {
@@ -138,9 +129,18 @@ export const commonNodes: QuestionNode[] = [
       { value: "yes", labelKey: "others.yes" },
     ],
     next: {
-      type: "map",
-      cases: { yes: "others-range", no: "danger" },
-      fallback: "danger",
+      type: "conditional",
+      cases: [
+        { when: { others: "yes" }, id: "others-range" },
+        { when: { category: ["PES", "HSE", "CHL", "FOL"] }, id: "danger" },
+        { when: { "wag-threat": ["yes", "unsafe"] }, id: "danger" },
+        { when: { "con-what": ["abuse", "fee", "documents", "movement"] }, id: "danger" },
+        { when: { "hrs-health": "yes" }, id: "danger" },
+        { when: { "san-risk": "yes" }, id: "danger" },
+        { when: { "dis-impact": ["threat", "abuse"] }, id: "danger" },
+        { when: { "oth-urgent": "yes" }, id: "danger" },
+      ],
+      fallback: "privacy",
     },
   },
   {
@@ -155,7 +155,19 @@ export const commonNodes: QuestionNode[] = [
       { value: "more-than-20", labelKey: "range.20+" },
       { value: "not-sure", labelKey: "range.unsure" },
     ],
-    next: { type: "node", id: "danger" },
+    next: {
+      type: "conditional",
+      cases: [
+        { when: { category: ["PES", "HSE", "CHL", "FOL"] }, id: "danger" },
+        { when: { "wag-threat": ["yes", "unsafe"] }, id: "danger" },
+        { when: { "con-what": ["abuse", "fee", "documents", "movement"] }, id: "danger" },
+        { when: { "hrs-health": "yes" }, id: "danger" },
+        { when: { "san-risk": "yes" }, id: "danger" },
+        { when: { "dis-impact": ["threat", "abuse"] }, id: "danger" },
+        { when: { "oth-urgent": "yes" }, id: "danger" },
+      ],
+      fallback: "privacy",
+    },
   },
   {
     id: "danger",

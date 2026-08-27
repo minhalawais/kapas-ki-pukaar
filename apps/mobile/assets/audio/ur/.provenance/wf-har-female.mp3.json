@@ -6,14 +6,14 @@
   "scriptUrdu": "کیا آپ خاتون نمائندے سے بات کرنا پسند کریں گے؟ یہ انتخاب آپ کا ہے۔",
   "scriptSha256": "501a8d33a3c7f8a5593ce84e0170d19c6257365d48bf160eabf0e92d2672dfbe",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "e46154a9e3f3340caf4555701348d5b644b5231e44ad2de8f33957731282debd",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "b773fcdfbc15d59ef1c2f7911227f73c14d3f52cf8ebfb51062b7bed1f25c16a",
   "generatedAt": "2026-08-22T08:51:54.147Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -23,6 +23,6 @@
     "integratedLufs": -19.34,
     "truePeakDb": -5.73
   },
-  "remasteredAt": "2026-08-22T09:56:30.207Z",
-  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-ends-v3"
+  "remasteredAt": "2026-08-24T07:47:54.704Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

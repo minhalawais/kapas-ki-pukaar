@@ -6,14 +6,14 @@
   "scriptUrdu": "خبردار کرنے والی نشانیاں۔ کھیت کے بعد آنکھوں میں جلن، جلد پر خارش، سر درد، متلی، چکر، سانس میں دقت یا غیر معمولی کمزوری۔ سپرے سے پہلے خبر نہ دینا، تازہ سپرے والے کھیت میں بھیجنا، دھونے کا پانی نہ ہونا یا زہر کی بوتل دوبارہ استعمال کرنا۔",
   "scriptSha256": "b8af963621c6601dfd8f2f9580d48c170b022ade48c8ff8349a8968d7bc96ce4",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "30d48853b11d5c6d4171e127c0938cd77ebe1c173f341d15e3b4c5f8105c762f",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "a5e5f4cd889ee1e0ef05d63713164aebee18ab252e435a74f3fe932cd84b1a80",
   "generatedAt": "2026-08-23T09:25:29.804Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 24.912,
     "integratedLufs": -18.92,
     "truePeakDb": -1.88
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:13.775Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }

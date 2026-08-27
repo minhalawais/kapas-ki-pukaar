@@ -39,7 +39,7 @@ export function WageRightsFacts() {
   );
 }
 
-export function WageRightsActions({ onListenCalculation, onReport }: { onListenCalculation: () => void; onReport: () => void }) {
+export function WageRightsActions({ onListenCalculation }: { onListenCalculation: () => void }) {
   const locale = useLocaleStore((state) => state.locale);
   const rtl = isRTL(locale);
   const family = rtl ? fontFamily.urduUi : fontFamily.ui;
@@ -59,27 +59,16 @@ export function WageRightsActions({ onListenCalculation, onReport }: { onListenC
         <Text style={{ color: semanticColors.textPrimary, fontSize: mobileType.body.size, lineHeight: rtl ? 29 : mobileType.body.line, fontFamily: family, textAlign: align }}>
           {t(locale, "rights.wages.action.remember")}
         </Text>
-        <View style={{ flexDirection: rtl ? "row-reverse" : "row", gap: 8 }}>
+        <View>
           <Pressable
             onPress={() => action(onListenCalculation)}
             accessibilityRole="button"
             accessibilityLabel={t(locale, "rights.wages.listenCalculation")}
-            style={({ pressed }) => ({ flex: 1, minHeight: 52, borderRadius: 8, borderWidth: 1, borderColor: semanticColors.borderEssential, backgroundColor: semanticColors.surface, flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 6, paddingHorizontal: 8, opacity: pressed ? 0.72 : 1 })}
+            style={({ pressed }) => ({ width: "100%", minHeight: 52, borderRadius: 8, borderWidth: 1, borderColor: semanticColors.borderEssential, backgroundColor: semanticColors.surface, flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 14, opacity: pressed ? 0.72 : 1 })}
           >
             <Ionicons name="volume-high" size={20} color={semanticColors.voiceActiveStrong} />
-            <Text numberOfLines={2} style={{ flexShrink: 1, color: semanticColors.voiceActiveStrong, fontSize: 14, lineHeight: rtl ? 24 : 19, fontFamily: strongFamily, textAlign: "center" }}>
+            <Text style={{ flexShrink: 1, color: semanticColors.voiceActiveStrong, fontSize: 14, lineHeight: rtl ? 24 : 19, fontFamily: strongFamily, textAlign: "center" }}>
               {t(locale, "rights.wages.listenCalculation")}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => action(onReport)}
-            accessibilityRole="button"
-            accessibilityLabel={t(locale, "rights.wages.reportCta")}
-            style={({ pressed }) => ({ flex: 1, minHeight: 52, borderRadius: 8, backgroundColor: semanticColors.actionPrimary, flexDirection: rtl ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 6, paddingHorizontal: 8, opacity: pressed ? 0.82 : 1 })}
-          >
-            <Ionicons name="mic" size={20} color={semanticColors.onPrimary} />
-            <Text numberOfLines={2} style={{ flexShrink: 1, color: semanticColors.onPrimary, fontSize: 14, lineHeight: rtl ? 24 : 19, fontFamily: strongFamily, textAlign: "center" }}>
-              {t(locale, "rights.wages.reportShort")}
             </Text>
           </Pressable>
         </View>

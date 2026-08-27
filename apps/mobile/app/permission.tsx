@@ -15,14 +15,18 @@ import { isRTL } from "../src/i18n/rtl";
 import { expoSpeechService } from "../src/services/expoSpeechService";
 import { useLocaleStore } from "../src/stores/localeStore";
 import { fontFamily, mobileType, semanticColors } from "../src/theme/tokens";
+import { localizedTextMetrics } from "../src/theme/urdu-text";
 
 export default function PermissionScreen() {
   const router = useRouter();
   const locale = useLocaleStore((s) => s.locale);
   const [state, setState] = useState<PermissionState>("undetermined");
   const [loading, setLoading] = useState(false);
-  const family = isRTL(locale) ? fontFamily.urduUi : fontFamily.ui;
-  const align = isRTL(locale) ? "right" : "left";
+  const rtl = isRTL(locale);
+  const family = rtl ? fontFamily.urduUi : fontFamily.ui;
+  const align = rtl ? "right" : "left";
+  const bodyMetrics = localizedTextMetrics(locale, mobileType.body.size, mobileType.body.line);
+  const helperMetrics = localizedTextMetrics(locale, mobileType.helper.size, mobileType.helper.line);
   useAutoPromptId("SC-permission");
 
   return (
@@ -46,19 +50,18 @@ export default function PermissionScreen() {
       <Text
         style={{
           color: semanticColors.textPrimary,
-          fontSize: mobileType.body.size,
-          lineHeight: mobileType.body.line,
           fontFamily: family,
           textAlign: align,
+          ...bodyMetrics,
         }}
       >
         {t(locale, "permission.body")}
       </Text>
       <View style={{ gap: 14 }}>
         {(["permission.local", "permission.optional", "permission.control"] as const).map((key) => (
-          <View key={key} style={{ flexDirection: isRTL(locale) ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
+          <View key={key} style={{ flexDirection: rtl ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
             <IconBadge icon="checkmark" tone="green" size={32} />
-            <Text style={{ flex: 1, color: semanticColors.textPrimary, fontSize: mobileType.helper.size, lineHeight: mobileType.helper.line, fontFamily: family, textAlign: align }}>{t(locale, key)}</Text>
+            <Text style={{ flex: 1, color: semanticColors.textPrimary, fontFamily: family, textAlign: align, ...helperMetrics }}>{t(locale, key)}</Text>
           </View>
         ))}
       </View>

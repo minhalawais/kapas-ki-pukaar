@@ -124,7 +124,8 @@ export function useGrievanceWizard() {
         privacyMode: cnic ? undefined : "ANON",
       };
       next = pushHistory(next, currentNode.id);
-      await setDraft({ ...next, stepId: "intro" });
+      const nextStep = resolveNext(currentNode, identityValue) ?? "category";
+      await setDraft({ ...next, stepId: nextStep });
     } catch {
       setIdentityError(true);
     } finally {

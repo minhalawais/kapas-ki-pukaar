@@ -6,14 +6,14 @@
   "scriptUrdu": "اجرت، کٹوتی اور ادائیگی۔ آپ کو پوری، وقت پر اور درست حساب سے اجرت ملنی چاہیے، بغیر غیر واضح کٹوتی کے۔",
   "scriptSha256": "e72789195ef98a9751d5b65d71349a13265bca81bf585105c43e6e2e0cb7d88b",
   "directionSha256": "d3c3ed66ecd023a0804756055bad287e81801e8b6575ae0213a4e640854dbb4d",
-  "masteringSha256": "2b69a52c8e8ac2bdf741ab5d31ca2a4cdb484612318b29cdee3b14e9c47dfb17",
-  "fileSha256": "15c2fd95403ce5d115897df2bcb8bf4e377ee754e68bca22275e880e036e176e",
+  "masteringSha256": "959d1af78dbbd8d5b59de1879f3e5e1d4dc22d3e56f346d6a11484ce0ed71470",
+  "fileSha256": "b369fab81416beb87e9586918d0ab2534a411542de43aee41cacb8bb37f09537",
   "generatedAt": "2026-08-23T09:19:27.520Z",
   "attempt": 1,
   "projectAlias": "primary-free-project",
-  "approvalStatus": "pending-native-review",
-  "reviewer": null,
-  "reviewedAt": null,
+  "approvalStatus": "approved",
+  "reviewer": "Project Owner",
+  "reviewedAt": "2026-08-27T18:47:36.805Z",
   "audio": {
     "codec": "mp3",
     "sampleRateHertz": 24000,
@@ -22,5 +22,7 @@
     "durationSeconds": 13.263,
     "integratedLufs": -17.9,
     "truePeakDb": -2.03
-  }
+  },
+  "remasteredAt": "2026-08-24T07:48:07.435Z",
+  "remasterProfile": "mp3-24khz-mono-64k-loudnorm-i-18-tp-2-trim-start-pad-1s-v4"
 }
